@@ -1,0 +1,15 @@
+
+body{margin:0;background:#050913;color:#dbe7ff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
+.header{padding:20px;background:#08101b;border-bottom:1px solid #1e3555;}
+.title{font-size:30px;font-weight:bold;color:#63d4ff;}
+.subtitle{color:#8fa3c0;}
+.content{padding:18px;padding-bottom:90px;}
+.card{background:#0b1220;border:1px solid #1d2a44;border-radius:18px;padding:18px;margin-bottom:18px;}
+.card h2{margin-top:0;color:#63d4ff;}
+input,select{width:100%;padding:14px;margin-top:10px;border-radius:12px;background:#101827;border:1px solid #28496d;color:white;box-sizing:border-box;}
+button{width:100%;padding:14px;margin-top:12px;border:none;border-radius:12px;background:#17365e;color:white;font-size:16px;}
+.task{background:#101827;padding:12px;border-radius:12px;margin-top:12px;border-left:4px solid #63d4ff;}
+.nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;background:#08101b;border-top:1px solid #1e3555;padding:12px 0;}
+.nav a{color:#8fa3c0;text-decoration:none;font-size:12px;text-align:center;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mini{background:#101827;padding:14px;border-radius:12px;text-align:center;}
