@@ -40,3 +40,22 @@ document.getElementById("missionList").innerHTML = saved;
 }
 
 loadTasks();
+function openModule(module){
+
+if(module === "sport"){
+alert("Module SPORT en développement");
+}
+
+if(module === "invest"){
+alert("Module INVESTISSEMENTS en développement");
+}
+
+if(module === "mecano"){
+alert("Module MÉCANIQUE en développement");
+}
+
+if(module === "urbanisme"){
+alert("Module URBANISME en développement");
+}
+
+}
