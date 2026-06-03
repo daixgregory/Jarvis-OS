@@ -1,30 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS OS V11</title>
 
-<!DOCTYPE <html><head><link rel="stylesheet" href="css/style.css"><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><link rel='stylesheet' href='css/style.css'><title>Jarvis V10</title></head><body>
-<div class='header'><div class='title'>JARVIS OS V10</div><div class='subtitle'>Ultimate Cognitive System</div></div>
-<div class='content'>
-<div class='grid'>
-<div class='mini'>🧠 Focus 72%</div>
-<div class='mini'>⚡ Fatigue 41%</div>
-<div class='mini'>💪 Discipline 68%</div>
-<div class='mini'>📈 Finance Stable</div>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="topbar">
+<div>
+<h1>JARVIS OS V11</h1>
+<p>Ultimate Cognitive Cockpit</p>
 </div>
-<div class='card'>
-<h2>📅 Ajouter une tâche</h2>
-<input id='taskName' placeholder='Nom de la tâche'>
-<select id='taskCategory'>
-<option>Travail</option><option>Sport</option><option>Urbanisme</option><option>Mécano</option><option>Investissements</option><option>Administratif</option>
-</select>
-<input id='taskDuration' type='number' placeholder='Durée en heures'>
-<button onclick='addTask()'>Ajouter tâche</button>
-<div id='taskList'></div>
+
+<div class="status">
+<span class="dot"></span>
+Système opérationnel
+</div>
+</header>
+
+<section class="dashboard">
+
+<div class="card glow">
+<h2>🧠 État Cognitif</h2>
+
+<div class="stats">
+<div>
+<span>Focus</span>
+<strong>72%</strong>
+</div>
+
+<div>
+<span>Énergie</span>
+<strong>64%</strong>
+</div>
+
+<div>
+<span>Discipline</span>
+<strong>81%</strong>
 </div>
 </div>
-<div class='nav'>
-<a href='index.html'>🧠<br>Core</a>
-<a href='sport.html'>💪<br>Sport</a>
-<a href='invest.html'>📈<br>Invest</a>
-<a href='mecano.html'>🔧<br>Mécano</a>
-<a href='urbanisme.html'>🏡<br>Urbanisme</a>
 </div>
-<script src='js/app.js'></script>
-</body></html>
+
+<div class="card">
+<h2>📅 Mission du jour</h2>
+
+<ul>
+<li>✔ Sport : séance haut du corps</li>
+<li>✔ Vérifier portefeuille ETF</li>
+<li>✔ Contrôle Nissan Qashqai</li>
+<li>✔ Projet urbanisme Larnas</li>
+</ul>
+</div>
+
+</section>
+
+<section class="modules">
+
+<a class="module-card" href="#">
+<div class="icon">🏋️</div>
+<h3>Sport</h3>
+<p>Suivi physique et progression</p>
+</a>
+
+<a class="module-card" href="#">
+<div class="icon">📈</div>
+<h3>Investissements</h3>
+<p>ETF, patrimoine et finances</p>
+</a>
+
+<a class="module-card" href="#">
+<div class="icon">🔧</div>
+<h3>Mécanique</h3>
+<p>Diagnostics et entretien</p>
+</a>
+
+<a class="module-card" href="#">
+<div class="icon">🏡</div>
+<h3>Urbanisme</h3>
+<p>Projets et documents</p>
+</a>
+
+<a class="module-card" href="#">
+<div class="icon">🧠</div>
+<h3>IA Assistant</h3>
+<p>Analyse intelligente</p>
+</a>
+
+<a class="module-card" href="#">
+<div class="icon">📅</div>
+<h3>Planning</h3>
+<p>Organisation dynamique</p>
+</a>
+
+</section>
+
+<section class="card">
+<h2>⚡ Commande rapide</h2>
+
+<input type="text" placeholder="Ajouter une mission...">
+
+<button>Exécuter</button>
+</section>
+
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
