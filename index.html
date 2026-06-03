@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS OS V11</title>
+
+<title>JARVIS OS V12</title>
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -14,99 +16,102 @@
 <div class="app">
 
 <header class="topbar">
+
 <div>
-<h1>JARVIS OS V11</h1>
-<p>Ultimate Cognitive Cockpit</p>
+<h1>JARVIS</h1>
+<p>Ultimate Cognitive OS</p>
 </div>
 
-<div class="status">
-<span class="dot"></span>
-Système opérationnel
+<div class="online">
+<div class="pulse"></div>
+<span>ONLINE</span>
 </div>
+
 </header>
 
-<section class="dashboard">
+<section class="hero">
 
-<div class="card glow">
+<div class="hero-card">
 <h2>🧠 État Cognitif</h2>
 
 <div class="stats">
-<div>
+
+<div class="stat">
 <span>Focus</span>
 <strong>72%</strong>
 </div>
 
-<div>
+<div class="stat">
 <span>Énergie</span>
 <strong>64%</strong>
 </div>
 
-<div>
+<div class="stat">
 <span>Discipline</span>
 <strong>81%</strong>
 </div>
-</div>
+
 </div>
 
-<div class="card">
-<h2>📅 Mission du jour</h2>
+</div>
 
-<ul>
-<li>✔ Sport : séance haut du corps</li>
-<li>✔ Vérifier portefeuille ETF</li>
-<li>✔ Contrôle Nissan Qashqai</li>
-<li>✔ Projet urbanisme Larnas</li>
+</section>
+
+<section class="mission">
+
+<h2>🎯 Mission du jour</h2>
+
+<ul id="missionList">
+<li>✔️ Sport : séance haut du corps</li>
+<li>✔️ Vérifier portefeuille ETF</li>
+<li>✔️ Contrôle Nissan Qashqai</li>
+<li>✔️ Projet urbanisme Larnas</li>
 </ul>
+
+</section>
+
+<section class="quick-actions">
+
+<div class="action-card">
+<h3>🏋️ Sport</h3>
+<p>Suivi progression & physique</p>
+</div>
+
+<div class="action-card">
+<h3>📈 Investissements</h3>
+<p>ETF • patrimoine • finances</p>
+</div>
+
+<div class="action-card">
+<h3>🔧 Mécanique</h3>
+<p>Diagnostics & entretien</p>
+</div>
+
+<div class="action-card">
+<h3>🏡 Urbanisme</h3>
+<p>Dossiers & suivi administratif</p>
 </div>
 
 </section>
 
-<section class="modules">
+<section class="task-box">
 
-<a class="module-card" href="#">
-<div class="icon">🏋️</div>
-<h3>Sport</h3>
-<p>Suivi physique et progression</p>
-</a>
+<h2>➕ Ajouter une mission</h2>
 
-<a class="module-card" href="#">
-<div class="icon">📈</div>
-<h3>Investissements</h3>
-<p>ETF, patrimoine et finances</p>
-</a>
+<input type="text" id="taskInput" placeholder="Nouvelle mission">
 
-<a class="module-card" href="#">
-<div class="icon">🔧</div>
-<h3>Mécanique</h3>
-<p>Diagnostics et entretien</p>
-</a>
-
-<a class="module-card" href="#">
-<div class="icon">🏡</div>
-<h3>Urbanisme</h3>
-<p>Projets et documents</p>
-</a>
-
-<a class="module-card" href="#">
-<div class="icon">🧠</div>
-<h3>IA Assistant</h3>
-<p>Analyse intelligente</p>
-</a>
-
-<a class="module-card" href="#">
-<div class="icon">📅</div>
-<h3>Planning</h3>
-<p>Organisation dynamique</p>
-</a>
+<button onclick="addTask()">Ajouter</button>
 
 </section>
 
-<section class="card">
-<h2>⚡ Commande rapide</h2>
+<section class="assistant">
 
-<input type="text" placeholder="Ajouter une mission...">
+<h2>🤖 Assistant JARVIS</h2>
 
-<button>Exécuter</button>
+<div class="assistant-box">
+“Système opérationnel. Toutes les fonctions critiques sont stables.”
+</div>
+
 </section>
 
 </div>
