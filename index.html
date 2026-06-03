@@ -8,7 +8,6 @@
 <title>JARVIS OS V12</title>
 
 <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
@@ -23,94 +22,85 @@
 </div>
 
 <div class="online">
-<div class="pulse"></div>
-<span>ONLINE</span>
+<div class="dot"></div>
+<span>Système opérationnel</span>
 </div>
 
 </header>
 
-<section class="hero">
+<section class="stats">
 
-<div class="hero-card">
+<div class="card">
 <h2>🧠 État Cognitif</h2>
 
-<div class="stats">
-
-<div class="stat">
+<div class="stat-line">
 <span>Focus</span>
 <strong>72%</strong>
 </div>
 
-<div class="stat">
+<div class="bar">
+<div class="fill blue" style="width:72%"></div>
+</div>
+
+<div class="stat-line">
 <span>Énergie</span>
 <strong>64%</strong>
 </div>
 
-<div class="stat">
+<div class="bar">
+<div class="fill green" style="width:64%"></div>
+</div>
+
+<div class="stat-line">
 <span>Discipline</span>
 <strong>81%</strong>
 </div>
 
+<div class="bar">
+<div class="fill purple" style="width:81%"></div>
 </div>
 
 </div>
 
 </section>
 
-<section class="mission">
+<section class="missions">
+
+<div class="card">
 
 <h2>🎯 Mission du jour</h2>
 
 <ul id="missionList">
+
 <li>✔️ Sport : séance haut du corps</li>
 <li>✔️ Vérifier portefeuille ETF</li>
 <li>✔️ Contrôle Nissan Qashqai</li>
 <li>✔️ Projet urbanisme Larnas</li>
+
 </ul>
+
+</div>
 
 </section>
 
 <section class="quick-actions">
 
-<div class="action-card" onclick="openModule('sport')">
+<div class="action-card" onclick="openModule('SPORT')">
 <h3>🏋️ Sport</h3>
 <p>Suivi progression & physique</p>
 </div>
 
-<div class="action-card" onclick="openModule('invest')">
+<div class="action-card" onclick="openModule('INVESTISSEMENTS')">
 <h3>📈 Investissements</h3>
 <p>ETF • patrimoine • finances</p>
 </div>
 
-<div class="action-card" onclick="openModule('meca')">
+<div class="action-card" onclick="openModule('MÉCANIQUE')">
 <h3>🔧 Mécanique</h3>
 <p>Diagnostics & entretien</p>
 </div>
 
-<div class="action-card" onclick="openModule('urbanisme')">
-<h3>🏡 Urbanisme</h3>
-<p>Dossiers & suivi administratif</p>
-</div>
-
-</section>
-
-<section id="moduleContainer"></section> 
-
-<div class="action-card" onclick="openModule('urbanisme')">
-<h3>🏡 Urbanisme</h3>
-<p>Dossiers & suivi administratif</p>
-</div>
-
-</section>
-
-<section id="moduleContainer"></section>
-
-<div class="action-card">
-<h3>🔧 Mécanique</h3>
-<p>Diagnostics & entretien</p>
-</div>
-
-<div class="action-card">
+<div class="action-card" onclick="openModule('URBANISME')">
 <h3>🏡 Urbanisme</h3>
 <p>Dossiers & suivi administratif</p>
 </div>
@@ -119,20 +109,30 @@
 
 <section class="task-box">
 
+<div class="card">
+
 <h2>➕ Ajouter une mission</h2>
 
 <input type="text" id="taskInput" placeholder="Nouvelle mission">
 
-<button onclick="addTask()">Ajouter</button>
+<button onclick="addTask()">
+Ajouter
+</button>
+
+</div>
 
 </section>
 
 <section class="assistant">
 
+<div class="card">
+
 <h2>🤖 Assistant JARVIS</h2>
 
 <div class="assistant-box">
-“Système opérationnel. Toutes les fonctions critiques sont stables.”
+Système opérationnel. Toutes les fonctions principales répondent correctement.
+</div>
+
 </div>
 
 </section>
