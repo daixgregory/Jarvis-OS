@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>JARVIS Planning</title>
+
+<style>
+
+body{
+background:#020b24;
+color:white;
+font-family:Arial,sans-serif;
+padding:20px;
+}
+
+h1{
+font-size:60px;
+color:#6bb6ff;
+}
+
+.card{
+background:#07163f;
+border:1px solid #163f8f;
+border-radius:25px;
+padding:20px;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:15px;
+margin-top:10px;
+margin-bottom:10px;
+font-size:18px;
+border-radius:15px;
+border:none;
+}
+
+button{
+width:100%;
+padding:15px;
+background:#2d8cff;
+color:white;
+font-size:18px;
+font-weight:bold;
+border:none;
+border-radius:15px;
+}
+
+.task{
+padding:15px;
+margin-top:10px;
+background:#0c215a;
+border-radius:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>📅 PLANNING</h1>
+
+<div class="card">
+
+<h2>Nouvelle tâche</h2>
+
+<input
+id="taskName"
+placeholder="Nom de la tâche">
+
+<input
+id="taskDuration"
+type="number"
+placeholder="Durée en minutes">
+
+<button onclick="addTask()">
+Ajouter
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Tâches enregistrées</h2>
+
+<div id="taskList"></div>
+
+</div>
+
+<script>
+
+let tasks =
+JSON.parse(
+localStorage.getItem("jarvis_planning")
+) || [];
+
+function saveTasks(){
+
+localStorage.setItem(
+"jarvis_planning",
+JSON.stringify(tasks)
+);
+
+}
+
+function renderTasks(){
+
+let html="";
+
+tasks.forEach(task=>{
+
+html += `
+<div class="task">
+<strong>${task.name}</strong><br>
+⏱️ ${task.duration} min
+</div>
+`;
+
+});
+
+document.getElementById(
+"taskList"
+).innerHTML = html;
+
+}
+
+function addTask(){
+
+const name =
+document.getElementById(
+"taskName"
+).value;
+
+const duration =
+document.getElementById(
+"taskDuration"
+).value;
+
+if(!name || !duration)
+return;
+
+tasks.push({
+name:name,
+duration:duration
+});
+
+saveTasks();
+
+renderTasks();
+
+document.getElementById(
+"taskName"
+).value="";
+
+document.getElementById(
+"taskDuration"
+).value="";
+
+}
+
+renderTasks();
+
+</script>
+
+</body>
+</html>
