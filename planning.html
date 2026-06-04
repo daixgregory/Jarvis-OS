@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JARVIS Planning V16</title>
+<title>JARVIS Planning V17</title>
 
 <style>
 
@@ -37,6 +37,7 @@ margin-bottom:10px;
 border:none;
 border-radius:15px;
 font-size:18px;
+box-sizing:border-box;
 }
 
 button{
@@ -59,6 +60,11 @@ border-radius:15px;
 
 small{
 color:#8dbbff;
+}
+
+#resume{
+font-size:20px;
+line-height:1.8;
 }
 
 </style>
@@ -84,6 +90,18 @@ color:#8dbbff;
 <button onclick="ajouterTache()">
 Ajouter
 </button>
+
+</div>
+
+<div class="card">
+
+<h2>📊 Résumé du jour</h2>
+
+<div id="resume">
+
+0 tâche
+
+</div>
 
 </div>
 
@@ -131,6 +149,19 @@ html += `
 `;
 
 });
+
+let totalMinutes = 0;
+
+taches.forEach(t => {
+totalMinutes += Number(t.duree);
+});
+
+document.getElementById("resume").innerHTML =
+`
+<b>${taches.length}</b> tâche(s)<br>
+<b>${totalMinutes}</b> minutes planifiées<br>
+<b>${(totalMinutes/60).toFixed(1)}</b> heures occupées
+`;
 
 document.getElementById("liste").innerHTML = html;
 
