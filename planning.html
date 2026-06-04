@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JARVIS Planning</title>
+<title>JARVIS Planning V16</title>
 
 <style>
 
@@ -33,30 +34,35 @@ width:100%;
 padding:15px;
 margin-top:10px;
 margin-bottom:10px;
-font-size:18px;
-border-radius:15px;
 border:none;
+border-radius:15px;
+font-size:18px;
 }
 
 button{
 width:100%;
-padding:15px;
-background:#2d8cff;
-color:white;
-font-size:18px;
-font-weight:bold;
+padding:20px;
 border:none;
-border-radius:15px;
+border-radius:20px;
+font-size:22px;
+font-weight:bold;
+background:#3d89ff;
+color:white;
 }
 
 .task{
+background:#0b1f52;
 padding:15px;
 margin-top:10px;
-background:#0c215a;
 border-radius:15px;
 }
 
+small{
+color:#8dbbff;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -67,16 +73,15 @@ border-radius:15px;
 
 <h2>Nouvelle tâche</h2>
 
-<input
-id="taskName"
-placeholder="Nom de la tâche">
+<input id="nom" placeholder="Nom de la tâche">
 
-<input
-id="taskDuration"
-type="number"
-placeholder="Durée en minutes">
+<input id="date" type="date">
 
-<button onclick="addTask()">
+<input id="heure" type="time">
+
+<input id="duree" type="number" placeholder="Durée en minutes">
+
+<button onclick="ajouterTache()">
 Ajouter
 </button>
 
@@ -86,82 +91,93 @@ Ajouter
 
 <h2>Tâches enregistrées</h2>
 
-<div id="taskList"></div>
+<div id="liste"></div>
 
 </div>
 
 <script>
 
-let tasks =
-JSON.parse(
-localStorage.getItem("jarvis_planning")
-) || [];
+let taches =
+JSON.parse(localStorage.getItem("jarvisPlanning"))
+|| [];
 
-function saveTasks(){
-
+function sauvegarder(){
 localStorage.setItem(
-"jarvis_planning",
-JSON.stringify(tasks)
+"jarvisPlanning",
+JSON.stringify(taches)
 );
-
 }
 
-function renderTasks(){
+function afficher(){
 
 let html="";
 
-tasks.forEach(task=>{
+taches.forEach((t,index)=>{
 
 html += `
 <div class="task">
-<strong>${task.name}</strong><br>
-⏱️ ${task.duration} min
+
+<b>${t.nom}</b><br>
+
+<small>
+📅 ${t.date}
+<br>
+🕒 ${t.heure}
+<br>
+⏱️ ${t.duree} min
+</small>
+
 </div>
 `;
 
 });
 
-document.getElementById(
-"taskList"
-).innerHTML = html;
+document.getElementById("liste").innerHTML = html;
 
 }
 
-function addTask(){
+function ajouterTache(){
 
-const name =
-document.getElementById(
-"taskName"
-).value;
+let nom =
+document.getElementById("nom").value;
 
-const duration =
-document.getElementById(
-"taskDuration"
-).value;
+let date =
+document.getElementById("date").value;
 
-if(!name || !duration)
+let heure =
+document.getElementById("heure").value;
+
+let duree =
+document.getElementById("duree").value;
+
+if(
+nom==="" ||
+date==="" ||
+heure==="" ||
+duree==="")
+{
 return;
+}
 
-tasks.push({
-name:name,
-duration:duration
+taches.push({
+nom,
+date,
+heure,
+duree
 });
 
-saveTasks();
+sauvegarder();
 
-renderTasks();
+afficher();
 
-document.getElementById(
-"taskName"
-).value="";
-
-document.getElementById(
-"taskDuration"
-).value="";
+document.getElementById("nom").value="";
+document.getElementById("date").value="";
+document.getElementById("heure").value="";
+document.getElementById("duree").value="";
 
 }
 
-renderTasks();
+afficher();
 
 </script>
 
