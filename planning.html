@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JARVIS Planning V17</title>
+<title>JARVIS Planning V18</title>
 
 <style>
 
@@ -67,6 +67,11 @@ font-size:20px;
 line-height:1.8;
 }
 
+#coach{
+font-size:20px;
+line-height:1.8;
+}
+
 </style>
 
 </head>
@@ -97,9 +102,17 @@ Ajouter
 
 <h2>📊 Résumé du jour</h2>
 
-<div id="resume">
+<div id="resume"></div>
 
-0 tâche
+</div>
+
+<div class="card">
+
+<h2>🤖 Coach IA</h2>
+
+<div id="coach">
+
+Analyse en cours...
 
 </div>
 
@@ -120,17 +133,19 @@ JSON.parse(localStorage.getItem("jarvisPlanning"))
 || [];
 
 function sauvegarder(){
+
 localStorage.setItem(
 "jarvisPlanning",
 JSON.stringify(taches)
 );
+
 }
 
 function afficher(){
 
 let html="";
 
-taches.forEach((t,index)=>{
+taches.forEach((t)=>{
 
 html += `
 <div class="task">
@@ -138,10 +153,8 @@ html += `
 <b>${t.nom}</b><br>
 
 <small>
-📅 ${t.date}
-<br>
-🕒 ${t.heure}
-<br>
+📅 ${t.date}<br>
+🕒 ${t.heure}<br>
 ⏱️ ${t.duree} min
 </small>
 
@@ -153,17 +166,69 @@ html += `
 let totalMinutes = 0;
 
 taches.forEach(t => {
+
 totalMinutes += Number(t.duree);
+
 });
+
+let heures = totalMinutes / 60;
 
 document.getElementById("resume").innerHTML =
 `
 <b>${taches.length}</b> tâche(s)<br>
 <b>${totalMinutes}</b> minutes planifiées<br>
-<b>${(totalMinutes/60).toFixed(1)}</b> heures occupées
+<b>${heures.toFixed(1)}</b> heures occupées
 `;
 
-document.getElementById("liste").innerHTML = html;
+let message = "";
+
+if(heures < 6){
+
+message =
+`
+✅ Journée équilibrée
+
+<br><br>
+
+Temps planifié :
+<b>${heures.toFixed(1)} h</b>
+`;
+
+}
+
+else if(heures < 10){
+
+message =
+`
+⚠️ Journée chargée
+
+<br><br>
+
+Temps planifié :
+<b>${heures.toFixed(1)} h</b>
+`;
+
+}
+
+else{
+
+message =
+`
+🚨 Risque de surcharge
+
+<br><br>
+
+Temps planifié :
+<b>${heures.toFixed(1)} h</b>
+`;
+
+}
+
+document.getElementById("coach").innerHTML =
+message;
+
+document.getElementById("liste").innerHTML =
+html;
 
 }
 
