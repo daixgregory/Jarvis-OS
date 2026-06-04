@@ -8,47 +8,56 @@
 
 <style>
 body{
-margin:0;
-font-family:-apple-system,sans-serif;
-background:#050b1f;
+background:#020b24;
 color:white;
+font-family:Arial,sans-serif;
 padding:20px;
-}
-
-.card{
-background:#0b1635;
-border:1px solid #163870;
-border-radius:25px;
-padding:20px;
-margin-bottom:20px;
 }
 
 h1{
-font-size:42px;
-margin:0;
-color:#6bc6ff;
+font-size:60px;
+color:#6bb6ff;
+margin-bottom:0;
 }
 
-h2{
-color:#6bc6ff;
+.card{
+background:#07163f;
+border:1px solid #163f8f;
+border-radius:30px;
+padding:25px;
+margin-top:25px;
 }
 
 .value{
-font-size:32px;
+font-size:60px;
 font-weight:bold;
-color:#6bc6ff;
+color:#6bb6ff;
 }
 
-.button{
-display:block;
-text-align:center;
+input{
+width:100%;
 padding:15px;
-background:linear-gradient(90deg,#2e5fff,#3cbcff);
+font-size:20px;
 border-radius:15px;
+border:none;
+margin-top:15px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:15px;
+font-size:20px;
+border:none;
+border-radius:15px;
+background:#2d8cff;
 color:white;
-text-decoration:none;
 font-weight:bold;
-margin-top:20px;
+}
+
+ul{
+font-size:22px;
+line-height:1.8;
 }
 </style>
 </head>
@@ -60,17 +69,31 @@ margin-top:20px;
 
 <div class="card">
 <h2>Poids actuel</h2>
-<div class="value">82 kg</div>
+
+<div class="value" id="weightDisplay">82 kg</div>
+
+<input
+type="number"
+step="0.1"
+id="weightInput"
+placeholder="Nouveau poids">
+
+<button onclick="saveWeight()">
+Enregistrer
+</button>
+
 </div>
 
 <div class="card">
 <h2>Objectif</h2>
+
 <p>Recomposition corporelle</p>
 <p>Prise de muscle + perte de gras</p>
 </div>
 
 <div class="card">
 <h2>Programme du jour</h2>
+
 <ul>
 <li>Développé couché haltères</li>
 <li>Rowing barre</li>
@@ -78,16 +101,45 @@ margin-top:20px;
 <li>Extensions triceps</li>
 <li>Abdominaux</li>
 </ul>
+
 </div>
 
-<div class="card">
-<h2>Dernière séance</h2>
-<p>À compléter</p>
-</div>
+<script>
 
-<a href="index.html" class="button">
-⬅ Retour à JARVIS
-</a>
+function saveWeight(){
+
+const value =
+document.getElementById("weightInput").value;
+
+if(value==="") return;
+
+localStorage.setItem(
+"jarvis_weight",
+value
+);
+
+document.getElementById(
+"weightDisplay"
+).innerHTML = value + " kg";
+
+}
+
+window.onload = function(){
+
+const saved =
+localStorage.getItem("jarvis_weight");
+
+if(saved){
+
+document.getElementById(
+"weightDisplay"
+).innerHTML = saved + " kg";
+
+}
+
+}
+
+</script>
 
 </body>
 </html>
