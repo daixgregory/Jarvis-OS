@@ -70,6 +70,7 @@
             margin-bottom: 16px;
             box-sizing: border-box;
             font-size: 16px;
+            transition: border-color 0.2s;
         }
 
         input:focus {
@@ -87,6 +88,10 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
+        }
+
+        .btn-submit:active {
+            opacity: 0.8;
         }
 
         .log-list {
@@ -174,7 +179,7 @@
     <h3 style="font-size: 16px; font-weight: 600; margin-top: 25px; margin-bottom: 10px;">Historique des pesées</h3>
     <div class="log-list" id="weightLogList"></div>
 
-    <!-- Barre de navigation avec vrais liens vers tes fichiers -->
+    <!-- Barre de navigation basse -->
     <nav class="nav-bar">
         <a href="index.html" class="nav-item">
             <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
@@ -202,7 +207,13 @@
         function saveWeight() {
             const weightInput = document.getElementById('weightInput');
             const val = parseFloat(weightInput.value);
-            if (!val) return alert("Indique un poids valide.");
+            
+            if (!val || isNaN(val)) {
+                weightInput.style.borderColor = "#ff453a";
+                return;
+            }
+
+            weightInput.style.borderColor = "var(--border-color)";
 
             let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
             weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
@@ -238,7 +249,6 @@
             });
         }
 
-        // Charger l'historique dès l'ouverture de la page
         window.onload = function() {
             displayWeightLogs();
         };
