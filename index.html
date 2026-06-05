@@ -1,149 +1,229 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis-OS</title>
-    
-    <!-- Configuration Application Web iPhone -->
+    <title>JARVIS OS V18</title>
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Tailwind CSS pour un design pro et rapide -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Lucide Icons pour des icônes modernes -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    
+    <link rel="stylesheet" href="css/style.css">
+    
     <style>
-        body {
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        /* Styles pour gérer le changement de vue sans bug de navigation */
+        .app-view { display: block; }
+        .hidden { display: none !important; }
+        .back-btn {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+            box-sizing: border-box;
         }
-        /* Masquer la scrollbar pour un effet appli native */
-        ::-webkit-scrollbar { display: none; }
+        .back-btn:active { background: #0f172a; }
+        /* Pour s'assurer que les formulaires s'intègrent bien dans ton design bleu nuit */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #fff;
+            border-radius: 12px;
+            margin: 8px 0 16px 0;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body class="bg-stone-950 text-stone-100 select-none antialiased text-sm pb-24">
 
-    <!-- BARRE DE STATUT HAUTE (Look iOS) -->
-    <header class="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-md border-b border-stone-800/60 p-4 flex justify-between items-center">
-        <h1 id="app-title" class="text-xl font-bold tracking-tight text-amber-500">Jarvis-OS</h1>
-        <span id="current-date" class="text-xs text-stone-400 font-medium"></span>
-    </header>
+<body>
 
-    <!-- CONTENEUR PRINCIPAL (Changement de vue dynamique) -->
-    <main class="p-4 max-w-md mx-auto min-h-[75vh]">
-        
-        <!-- VUE 1 : PLANNING -->
-        <section id="view-planning" class="app-view space-y-4">
-            <h2 class="text-lg font-semibold text-stone-200">Mon Planning</h2>
-            <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 text-center text-stone-400">
-                Le module planning (frise chronologique) va être injecté ici.
+<div class="app">
+
+    <div id="view-dashboard" class="app-view">
+        <header class="topbar">
+            <div>
+                <h1>JARVIS</h1>
+                <p>Ultimate Cognitive OS</p>
+            </div>
+            <div class="online">
+                <div class="dot"></div>
+                <span>Système opérationnel</span>
+            </div>
+        </header>
+
+        <section class="stats">
+            <div class="card">
+                <h2>🧠 État Cognitif</h2>
+                <div class="stat-line"><span>Focus</span><strong>72%</strong></div>
+                <div class="bar"><div class="fill blue" style="width:72%"></div></div>
+                
+                <div class="stat-line"><span>Énergie</span><strong>64%</strong></div>
+                <div class="bar"><div class="fill green" style="width:64%"></div></div>
+                
+                <div class="stat-line"><span>Discipline</span><strong>81%</strong></div>
+                <div class="bar"><div class="fill purple" style="width:81%"></div></div>
             </div>
         </section>
 
-        <!-- VUE 2 : BOURSE -->
-        <section id="view-bourse" class="app-view hidden space-y-4">
-            <h2 class="text-lg font-semibold text-stone-200">Investissements & Bourse</h2>
-            <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 text-center text-stone-400">
-                Suivi Interactive Brokers et performances.
+        <section class="missions">
+            <div class="card">
+                <h2>🎯 Mission du jour</h2>
+                <ul id="missionList">
+                    <li>✔️ Vérifier portefeuille ETF</li>
+                    <li>✔️ Suivi Nissan Qashqai</li>
+                    <li>✔️ Dossier Larnas</li>
+                    <li>✔️ Séance sport</li>
+                </ul>
             </div>
         </section>
 
-        <!-- VUE 3 : SPORT -->
-        <section id="view-sport" class="app-view hidden space-y-4">
-            <h2 class="text-lg font-semibold text-stone-200">Musculation & Sport</h2>
-            <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 text-center text-stone-400">
-                Programmes d'entraînement et charges.
+        <section class="quick-actions">
+            <div class="action-card" onclick="switchView('sport')">
+                <h3>🏋️ Sport</h3>
+                <p>Suivi physique & progression</p>
+            </div>
+
+            <div class="action-card" onclick="switchView('planning')">
+                <h3>📅 Planning</h3>
+                <p>Organisation & tâches</p>
+            </div>
+
+            <div class="action-card" onclick="switchView('investissements')">
+                <h3>📈 Investissements</h3>
+                <p>ETF • patrimoine • finances</p>
+            </div>
+
+            <div class="action-card" onclick="switchView('mecanique')">
+                <h3>🔧 Mécanique</h3>
+                <p>Qashqai • Boxer • Corsa</p>
+            </div>
+
+            <div class="action-card" onclick="alert('Module Urbanisme en préparation')">
+                <h3>🏡 Urbanisme</h3>
+                <p>Dossier Larnas & administratif</p>
             </div>
         </section>
 
-        <!-- VUE 4 : MÉCANIQUE -->
-        <section id="view-mecanique" class="app-view hidden space-y-4">
-            <h2 class="text-lg font-semibold text-stone-200">Entretien Mécanique</h2>
-            <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 text-center text-stone-400">
-                Suivi des véhicules (Qashqai, Boxer).
+        <section class="assistant">
+            <div class="card">
+                <h2>🤖 Assistant JARVIS</h2>
+                <div class="assistant-box">
+                    Bienvenue Grégory.<br><br>
+                    Modules actifs :<br>
+                    ✅ Sport | ✅ Planning | ✅ Mécanique | ✅ Finances
+                </div>
             </div>
         </section>
+    </div>
 
-        <!-- VUE 5 : BUDGET -->
-        <section id="view-budget" class="app-view hidden space-y-4">
-            <h2 class="text-lg font-semibold text-stone-200">Budget & Patrimoine</h2>
-            <div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 text-center text-stone-400">
-                Objectifs expatriation et suivi des comptes.
+
+    <div id="view-sport" class="app-view hidden">
+        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
+        <section class="stats">
+            <div class="card">
+                <h2>🏋️ Suivi Sport & Musculation</h2>
+                <p>Poids actuel : <strong>76 kg</strong></p>
+                <input type="number" placeholder="Nouveau poids (kg)..." id="weightInput">
+                <button class="btn-submit" onclick="alert('Poids enregistré !')">Enregistrer le poids</button>
+                
+                <h3 style="margin-top:20px; color:#38bdf8;">💪 Programme du jour</h3>
+                <ul style="padding-left:20px; margin-top:10px; line-height:2;">
+                    <li>Développé couché</li>
+                    <li>Squat barre</li>
+                    <li>Tractions</li>
+                </ul>
             </div>
         </section>
+    </div>
 
-    </main>
 
-    <!-- BARRE DE NAVIGATION BASSE (Style App Native) -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-stone-900/90 backdrop-blur-lg border-t border-stone-800/80 px-2 py-2 safe-bottom">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            
-            <button onclick="switchView('planning')" id="nav-planning" class="flex flex-col items-center gap-1 text-amber-500 transition-colors w-16 py-1">
-                <i data-lucide="calendar-range" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Planning</span>
-            </button>
+    <div id="view-planning" class="app-view hidden">
+        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
+        <section class="stats">
+            <div class="card">
+                <h2>📅 Planning Global</h2>
+                <div style="background:#0f172a; border-radius:12px; padding:15px; margin-top:15px; text-align:center; color:#94a3b8;">
+                    🔵 Poste du matin (Usine)<br><br>
+                    🟢 Séance de musculation (Sport)
+                </div>
+            </div>
+        </section>
+    </div>
 
-            <button onclick="switchView('bourse')" id="nav-bourse" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-200 transition-colors w-16 py-1">
-                <i data-lucide="trending-up" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Bourse</span>
-            </button>
 
-            <button onclick="switchView('sport')" id="nav-sport" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-200 transition-colors w-16 py-1">
-                <i data-lucide="dumbbell" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Sport</span>
-            </button>
+    <div id="view-mecanique" class="app-view hidden">
+        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
+        <section class="stats">
+            <div class="card">
+                <h2>🔧 Carnet d'Entretien Mécanique</h2>
+                
+                <label for="vehicule-select">Sélectionner un véhicule :</label>
+                <select id="vehicule-select">
+                    <option value="qashqai">Nissan Qashqai</option>
+                    <option value="boxer">Peugeot Boxer</option>
+                    <option value="corsa">Opel Corsa</option>
+                </select>
 
-            <button onclick="switchView('mecanique')" id="nav-mecanique" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-200 transition-colors w-16 py-1">
-                <i data-lucide="wrench" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Mécanique</span>
-            </button>
+                <input type="text" placeholder="Intervention (ex: Vidange, Vanne EGR...)" id="intervInput">
+                <input type="number" placeholder="Kilométrage..." id="kmInput">
+                <button class="btn-submit" onclick="alert('Intervention ajoutée au carnet !')">Ajouter l'entretien</button>
+            </div>
+        </section>
+    </div>
 
-            <button onclick="switchView('budget')" id="nav-budget" class="flex flex-col items-center gap-1 text-stone-400 hover:text-stone-200 transition-colors w-16 py-1">
-                <i data-lucide="wallet" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Budget</span>
-            </button>
 
-        </div>
-    </nav>
+    <div id="view-investissements" class="app-view hidden">
+        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
+        <section class="stats">
+            <div class="card">
+                <h2>📈 Investissements & Patrimoine</h2>
+                <div style="margin-bottom:15px;">
+                    <p>Suivi Bourse (Interactive Brokers)</p>
+                    <p style="font-size:18px; color:#22c55e; font-weight:bold; margin-top:5px;">Objectif : Expatriation 2029-2030</p>
+                </div>
+                <div class="stat-line"><span>Allocation ETF S&P 500</span><strong>100%</strong></div>
+                <div class="bar"><div class="fill blue" style="width:100%"></div></div>
+            </div>
+        </section>
+    </div>
 
-    <!-- SCRIPT DE NAVIGATION ET LOGIQUE GLOBALE -->
-    <script>
-        // Gestion du changement d'onglets
-        function switchView(viewId) {
-            // Masquer toutes les vues
-            document.querySelectorAll('.app-view').forEach(view => view.classList.add('hidden'));
-            // Afficher la vue sélectionnée
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+</div>
 
-            // Réinitialiser le style de tous les boutons de navigation
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('text-amber-500');
-                btn.classList.add('text-stone-400');
-            });
-            // Activer le bouton cliqué
-            document.getElementById(`nav-${viewId}`).classList.add('text-amber-500');
-            document.getElementById(`nav-${viewId}`).classList.remove('text-stone-400');
-            
-            // Ajuster le titre du haut pour le style
-            const titles = {
-                planning: 'Jarvis // Planning',
-                bourse: 'Jarvis // Bourse',
-                sport: 'Jarvis // Sport',
-                mecanique: 'Jarvis // Mécanique',
-                budget: 'Jarvis // Budget'
-            };
-            document.getElementById('app-title').innerText = titles[viewId];
-        }
+<script>
+    function switchView(viewId) {
+        // Masquer toutes les vues
+        document.querySelectorAll('.app-view').forEach(view => {
+            view.classList.add('hidden');
+        });
+        // Afficher uniquement la vue demandée
+        document.getElementById('view-' + viewId).classList.remove('hidden');
+        // Remonter en haut de page automatiquement
+        window.scrollTo(0, 0);
+    }
+</script>
 
-        // Afficher la date du jour en haut
-        const options = { weekday: 'short', day: 'numeric', month: 'short' };
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('fr-FR', options);
+<script src="js/app.js"></script>
 
-        // Initialiser les icônes Lucide
-        lucide.createIcons();
-    </script>
 </body>
 </html>
