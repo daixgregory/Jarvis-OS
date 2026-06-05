@@ -103,15 +103,67 @@
         render();
     }
 
-    function render() {
-        // Mise à jour Planning
-        document.getElementById('netValue').innerText = db.assets.toLocaleString() + ' €';
-        // Mise à jour Budget
-        document.getElementById('budgetLog').innerHTML = db.budget.map(item => 
-            `<div class="card">${item.desc} : ${item.price} €</div>`).join('');
+function render() {
+
+    // Ligne Verte
+    document.getElementById('netValue').innerText =
+        db.assets.toLocaleString() + ' €';
+
+    // Objectif Paraguay
+    const objectif = 500000;
+
+    const progression =
+        ((db.assets / objectif) * 100).toFixed(1);
+
+    document.getElementById('goalProgress').innerText =
+        progression + ' %';
+
+    // Patrimoine liquide
+    document.getElementById('liquidAssets').innerText =
+        db.assets.toLocaleString() + ' €';
+
+    // Autonomie
+    const autonomie =
+        (db.assets / 24000).toFixed(1);
+
+    document.getElementById('autonomy').innerText =
+        autonomie + ' années';
+
+    // Coach JARVIS
+    let conseil = '';
+
+    if (progression < 25) {
+        conseil = 'Accélérer l’épargne et les investissements.';
+    }
+    else if (progression < 50) {
+        conseil = 'Bonne progression. Continuer le plan.';
+    }
+    else if (progression < 75) {
+        conseil = 'Objectif Paraguay en bonne voie.';
+    }
+    else {
+        conseil = 'Objectif proche. Maintenir le cap.';
     }
 
+    document.getElementById('jarvisAdvice').innerText =
+        conseil;
+
+    // Budget
+    document.getElementById('budgetLog').innerHTML =
+        db.budget.map(item =>
+            `<div class="card">${item.desc} : ${item.price} €</div>`
+        ).join('');
+}
+const objectif = 500000;
+
+const progression =
+    ((db.assets / objectif) * 100).toFixed(1);
+
+const autonomie =
+    (db.assets / 24000).toFixed(1);
     render(); // Initialisation immédiate
 </script>
 </body>
 </html>
+
+
