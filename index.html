@@ -2,343 +2,100 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jarvis-OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS-OS | Cockpit</title>
     <style>
-        :root {
-            --bg-color: #000000;
-            --card-bg: #121212;
-            --accent-color: #ff9f0a;
-            --text-color: #ffffff;
-            --text-muted: #8e8e93;
-            --border-color: #1c1c1e;
-            --input-bg: #1c1c1e;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 16px;
-            padding-bottom: 90px;
-            box-sizing: border-box;
-        }
-
-        header {
-            padding: 4px 0 20px 0;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin: 0;
-        }
-
-        .view-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 10px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            font-size: 16px;
-            -webkit-appearance: none;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--accent-color);
-            color: #000000;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            -webkit-appearance: none;
-        }
-
-        .btn-submit:active {
-            opacity: 0.8;
-        }
-
-        .log-list {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .log-item {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px 14px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        /* Barre de navigation basse fixe */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 75px;
-            background-color: #0a0a0a;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            text-decoration: none;
-            flex: 1;
-            padding: 8px 0;
-            font-size: 11px;
-            font-weight: 500;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            margin-bottom: 5px;
-            fill: currentColor;
-        }
-
-        .nav-item.active {
-            color: var(--accent-color);
-        }
-
-        /* Gestion de l'affichage des onglets */
-        .app-view {
-            display: none;
-        }
-        .app-view.active {
-            display: block;
-        }
+        :root { --bg: #000; --card: #121212; --accent: #8b5cf6; --text: #fff; --text-m: #9ca3af; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 100px; }
+        .header { padding: 20px; font-size: 24px; font-weight: bold; color: var(--accent); }
+        .card { background: var(--card); border: 1px solid #333; border-radius: 16px; padding: 16px; margin: 10px; }
+        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
+        .app-view { display: none; }
+        .app-view.active { display: block; }
+        .btn { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Jarvis-OS</h1>
-    </header>
+<div class="header">JARVIS-OS</div>
 
-    <!-- VUE 1 : PLANNING -->
-    <div id="view-planning" class="app-view">
-        <h2 class="view-title">Planning</h2>
-        <div class="card">
-            <p style="color: var(--text-muted);">Aucun événement planifié aujourd'hui.</p>
-        </div>
+<!-- VUE 1 : PLANNING -->
+<div id="view-planning" class="app-view active">
+    <div class="card">
+        <h3>Camembert de Charge Mentale</h3>
+        <div id="chargeChart" style="height: 150px; background: #222; border-radius: 50%;"></div>
     </div>
+    <div id="taskList"></div>
+</div>
 
-    <!-- VUE 2 : BOURSE -->
-    <div id="view-bourse" class="app-view">
-        <h2 class="view-title">Suivi Bourse</h2>
-        <div class="card">
-            <p style="color: var(--text-muted);">Données de portefeuille indisponibles.</p>
-        </div>
+<!-- VUE 2 : BOURSE -->
+<div id="view-bourse" class="app-view">
+    <div class="card">
+        <h3>Valeur Nette (Le Graal)</h3>
+        <h1 id="netValue">0 €</h1>
     </div>
+    <div id="assetList"></div>
+</div>
 
-    <!-- VUE 3 : SPORT (Celle qui nous intéresse !) -->
-    <div id="view-sport" class="app-view active">
-        <h2 class="view-title">Suivi Sport</h2>
-        
-        <div class="card">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <span style="color: var(--text-muted); font-size: 14px;">Dernier poids enregistré</span>
-                <div style="font-size: 32px; font-weight: bold; color: var(--accent-color); margin-top: 5px;">
-                    <span id="currentWeightDisplay">--</span> <span style="font-size: 18px;">kg</span>
-                </div>
-                <p id="weightDiffDisplay" style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></p>
-            </div>
-
-            <form id="weightForm" onsubmit="saveWeight(event)">
-                <label for="weightInput">Nouvelle pesée (kg) :</label>
-                <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal" required>
-                <button type="submit" class="btn-submit">Enregistrer le poids</button>
-            </form>
-        </div>
-
-        <h3 style="font-size: 16px; font-weight: 600; margin-top: 25px; margin-bottom: 10px;">Historique des pesées</h3>
-        <div class="log-list" id="weightLogList"></div>
+<!-- VUE 3 : SPORT -->
+<div id="view-sport" class="app-view">
+    <div class="card">
+        <canvas id="weightChart"></canvas>
     </div>
+</div>
 
-    <!-- VUE 4 : MÉCANIQUE -->
-    <div id="view-mecanique" class="app-view">
-        <h2 class="view-title">Mécanique</h2>
-        <div class="card">
-            <p style="color: var(--text-muted);">Aucun entretien en cours.</p>
-        </div>
+<!-- VUE 4 : MÉCANIQUE -->
+<div id="view-mecanique" class="app-view">
+    <div class="card">
+        <input type="text" id="mechTask" placeholder="Ex: Vanne EGR - 120€">
+        <button class="btn" onclick="addMech()">Ajouter au Budget & Planning</button>
     </div>
+</div>
 
-    <!-- VUE 5 : BUDGET -->
-    <div id="view-budget" class="app-view">
-        <h2 class="view-title">Budget</h2>
-        <div class="card">
-            <p style="color: var(--text-muted);">Aucune transaction ce mois-ci.</p>
-        </div>
+<!-- VUE 5 : URBANISME -->
+<div id="view-urbanisme" class="app-view">
+    <div class="card"><h3>Dossier Larnas & Échéances</h3></div>
+</div>
+
+<!-- VUE 6 : BUDGET -->
+<div id="view-budget" class="app-view">
+    <div class="card">
+        <h3>Import Relevé (PDF)</h3>
+        <input type="file" id="pdfUpload">
     </div>
+    <div id="budgetList"></div>
+</div>
 
-    <!-- Barre de navigation basse (gère le changement d'onglet en JS) -->
-    <nav class="nav-bar">
-        <button class="nav-item" onclick="switchView('planning')">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            <span>Planning</span>
-        </button>
-        <button class="nav-item" onclick="switchView('bourse')">
-            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-            <span>Bourse</span>
-        </button>
-        <button class="nav-item active" id="nav-sport" onclick="switchView('sport')">
-            <svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-3V3.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5V5H8c-1.1 0-2 .9-2 2v4H3.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5H6v4c0 1.1.9 2 2 2h3v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h3c1.1 0 2-.9 2-2v-4h1.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/></svg>
-            <span>Sport</span>
-        </button>
-        <button class="nav-item" onclick="switchView('mecanique')">
-            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.4 6.6.9 9.7 2.9 11.6c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
-            <span>Mécanique</span>
-        </button>
-        <button class="nav-item" onclick="switchView('budget')">
-            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            <span>Budget</span>
-        </button>
-    </nav>
+<div class="navbar">
+    <button onclick="show('planning')">📅</button>
+    <button onclick="show('bourse')">📈</button>
+    <button onclick="show('sport')">⚏</button>
+    <button onclick="show('mecanique')">🔧</button>
+    <button onclick="show('urbanisme')">🏛</button>
+    <button onclick="show('budget')">💳</button>
+</div>
 
-    <script>
-        // Moteur de navigation entre les onglets
-        function switchView(viewId) {
-            // Masquer toutes les vues
-            document.querySelectorAll('.app-view').forEach(view => {
-                view.classList.remove('active');
-            });
-            // Enlever la classe active de la barre du bas
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
+<script>
+    // État centralisé
+    let state = JSON.parse(localStorage.getItem('jarvis_data')) || {
+        tasks: [], assets: [], weight: [], budget: [], mech: []
+    };
 
-            // Afficher la vue demandée
-            const targetView = document.getElementById(`view-${viewId}`);
-            if (targetView) targetView.classList.add('active');
+    function save() { localStorage.setItem('jarvis_data', JSON.stringify(state)); }
 
-            // Mettre en surbrillance l'icône cliquée
-            const eventTarget = window.event ? window.event.currentTarget : null;
-            if (eventTarget && eventTarget.classList) {
-                eventTarget.classList.add('active');
-            } else {
-                const fallbackNav = document.getElementById(`nav-${viewId}`);
-                if (fallbackNav) fallbackNav.classList.add('active');
-            }
+    function addMech() {
+        const val = document.getElementById('mechTask').value;
+        // Logique de pontage
+        state.budget.push({ category: 'Mécanique', amount: 120, status: 'pending' });
+        state.tasks.push({ title: 'Changement vanne EGR', date: '2026-06-07' });
+        save();
+        alert("Action synchronisée : Budget et Planning mis à jour.");
+    }
 
-            // Si on va sur l'onglet sport, on rafraîchit l'historique
-            if (viewId === 'sport') {
-                displayWeightLogs();
-            }
-        }
-
-        // --- SCRIPT DE SAUVEGARDE DU POIDS ---
-        function saveWeight(event) {
-            if (event) event.preventDefault();
-
-            const weightInput = document.getElementById('weightInput');
-            if (!weightInput) return false;
-            
-            const val = parseFloat(weightInput.value);
-            if (!val || isNaN(val)) {
-                weightInput.style.borderColor = "#ff453a";
-                return false;
-            }
-
-            weightInput.style.borderColor = "var(--border-color)";
-
-            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-            weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
-            localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
-            
-            weightInput.value = '';
-            weightInput.blur(); // Ferme le clavier sur l'iPhone
-            
-            displayWeightLogs();
-            return false;
-        }
-
-        // --- AFFICHAGE DE L'HISTORIQUE ---
-        function displayWeightLogs() {
-            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-            const currentDisplay = document.getElementById('currentWeightDisplay');
-            const diffDisplay = document.getElementById('weightDiffDisplay');
-            const logList = document.getElementById('weightLogList');
-            
-            if (currentDisplay) {
-                currentDisplay.innerText = weightHistory.length > 0 ? weightHistory[0].weight : "--";
-            }
-            
-            if (diffDisplay) {
-                if(weightHistory.length > 1) {
-                    const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
-                    diffDisplay.innerText = diff > 0 ? `+${diff} kg depuis la dernière pesée` : `${diff} kg depuis la dernière pesée`;
-                } else {
-                    diffDisplay.innerText = weightHistory.length === 1 ? "Première pesée enregistrée." : "Aucune donnée enregistrée.";
-                }
-            }
-
-            if (logList) {
-                logList.innerHTML = '';
-                weightHistory.forEach(item => {
-                    logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
-                });
-            }
-        }
-
-        // Charger les données sportives au démarrage
-        window.onload = function() {
-            displayWeightLogs();
-        };
-    </script>
+    function show(id) {
+        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-' + id).classList.add('active');
+    }
+</script>
 </body>
 </html>
