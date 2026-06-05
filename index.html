@@ -3,58 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS-OS</title>
+    <title>JARVIS-OS | Système Central</title>
     <style>
-        body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
-        .app-view { display: none; padding: 20px; }
-        .app-view.active { display: block; }
-        .card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-top: 15px; }
-        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
-        h3 { color: #8b5cf6; margin-top: 0; }
-        input { background: #222; border: 1px solid #444; color: #fff; padding: 10px; width: 90%; border-radius: 8px; }
-        button { background: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; }
+        :root { --bg: #000; --card: #121212; --accent: #8b5cf6; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 100px; }
+        .view { display: none; padding: 20px; }
+        .view.active { display: block; }
+        .card { background: var(--card); border: 1px solid #333; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
+        button { background: none; border: none; color: #fff; font-size: 24px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        .btn-main { background: var(--accent); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
 
-<div id="view-planning" class="app-view active">
+<div id="planning" class="view active">
     <h3>Cockpit Global</h3>
     <div class="card"><h1 id="netValue">0 €</h1><p>Valeur Nette Totale</p></div>
+    <div id="taskList"></div>
 </div>
 
-<div id="view-budget" class="app-view">
-    <h3>Budget</h3>
+<div id="bourse" class="view">
+    <h3>Investissements</h3>
     <div class="card">
-        <input type="number" id="salary" placeholder="Salaire net">
-        <button onclick="saveData()">Enregistrer</button>
+        <input type="number" id="etfInput" placeholder="Valeur ETF (€)">
+        <button class="btn-main" onclick="saveAsset()">Enregistrer</button>
     </div>
-    <div id="budgetDisplay"></div>
 </div>
 
-<div class="navbar">
-    <button onclick="show('planning')">📅</button>
-    <button onclick="show('budget')">💳</button>
+<div id="meca" class="view">
+    <h3>Mécanique</h3>
+    <div class="card">
+        <input type="text" id="mecaDesc" placeholder="Intervention">
+        <input type="number" id="mecaPrice" placeholder="Prix">
+        <button class="btn-main" onclick="saveMeca()">Ajouter au Budget</button>
+    </div>
+</div>
+
+<div id="budget" class="view">
+    <h3>Budget</h3>
+    <div id="budgetLog"></div>
+</div>
+
+<div class="nav">
+    <button onclick="switchView('planning')">📅</button>
+    <button onclick="switchView('bourse')">📈</button>
+    <button onclick="switchView('meca')">🔧</button>
+    <button onclick="switchView('budget')">💳</button>
 </div>
 
 <script>
-    function show(id) {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-        document.getElementById('view-' + id).classList.add('active');
+    // MOTEUR D'ÉTAT UNIFIÉ
+    let db = JSON.parse(localStorage.getItem('jarvis_data')) || { assets: 0, budget: [] };
+
+    function switchView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
-    function saveData() {
-        const salary = document.getElementById('salary').value;
-        localStorage.setItem('jarvis_data', JSON.stringify({ salary }));
+    function saveAsset() {
+        db.assets = parseFloat(document.getElementById('etfInput').value) || 0;
+        localStorage.setItem('jarvis_data', JSON.stringify(db));
+        render();
+    }
+
+    function saveMeca() {
+        const desc = document.getElementById('mecaDesc').value;
+        const price = parseFloat(document.getElementById('mecaPrice').value);
+        db.budget.push({ desc, price });
+        localStorage.setItem('jarvis_data', JSON.stringify(db));
         render();
     }
 
     function render() {
-        const data = JSON.parse(localStorage.getItem('jarvis_data')) || { salary: 0 };
-        document.getElementById('netValue').innerText = data.salary + ' €';
-        document.getElementById('budgetDisplay').innerHTML = `<div class="card">Salaire enregistré : ${data.salary} €</div>`;
+        // Mise à jour Planning
+        document.getElementById('netValue').innerText = db.assets.toLocaleString() + ' €';
+        // Mise à jour Budget
+        document.getElementById('budgetLog').innerHTML = db.budget.map(item => 
+            `<div class="card">${item.desc} : ${item.price} €</div>`).join('');
     }
 
-    render(); // Initialise l'affichage au chargement
+    render(); // Initialisation immédiate
 </script>
 </body>
 </html>
