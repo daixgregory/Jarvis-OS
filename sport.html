@@ -1,145 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jarvis-OS - Sport</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --accent-color: #ff9f0a;
+            --text-color: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #1c1c1e;
+            --input-bg: #1c1c1e;
+        }
 
-<title>JARVIS SPORT</title>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 90px;
+            box-sizing: border-box;
+        }
 
-<style>
-body{
-background:#020b24;
-color:white;
-font-family:Arial,sans-serif;
-padding:20px;
-}
+        header {
+            padding: 4px 0 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
 
-h1{
-font-size:60px;
-color:#6bb6ff;
-margin-bottom:0;
-}
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 0;
+        }
 
-.card{
-background:#07163f;
-border:1px solid #163f8f;
-border-radius:30px;
-padding:25px;
-margin-top:25px;
-}
+        .view-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
 
-.value{
-font-size:60px;
-font-weight:bold;
-color:#6bb6ff;
-}
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
 
-input{
-width:100%;
-padding:15px;
-font-size:20px;
-border-radius:15px;
-border:none;
-margin-top:15px;
-}
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
 
-button{
-width:100%;
-padding:15px;
-margin-top:15px;
-font-size:20px;
-border:none;
-border-radius:15px;
-background:#2d8cff;
-color:white;
-font-weight:bold;
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
 
-ul{
-font-size:22px;
-line-height:1.8;
-}
-</style>
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .log-list {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .log-item {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* Barre de navigation basse fixe */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 75px;
+            background-color: #0a0a0a;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            flex: 1;
+            padding: 8px 0;
+            font-size: 11px;
+            font-weight: 500;
+            background: none;
+            border: none;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 5px;
+            fill: currentColor;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>🏋️ SPORT</h1>
-<p>Suivi physique & progression</p>
+    <header>
+        <h1>Jarvis-OS</h1>
+    </header>
 
-<div class="card">
-<h2>Poids actuel</h2>
+    <h2 class="view-title">Suivi Sport</h2>
+    
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span style="color: var(--text-muted); font-size: 14px;">Dernier poids enregistré</span>
+            <div style="font-size: 32px; font-weight: bold; color: var(--accent-color); margin-top: 5px;">
+                <span id="currentWeightDisplay">--</span> <span style="font-size: 18px;">kg</span>
+            </div>
+            <p id="weightDiffDisplay" style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></p>
+        </div>
 
-<div class="value" id="weightDisplay">82 kg</div>
+        <label for="weightInput">Nouvelle pesée (kg) :</label>
+        <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput">
+        <button class="btn-submit" onclick="saveWeight()">Enregistrer le poids</button>
+    </div>
 
-<input
-type="number"
-step="0.1"
-id="weightInput"
-placeholder="Nouveau poids">
+    <h3 style="font-size: 16px; font-weight: 600; margin-top: 25px; margin-bottom: 10px;">Historique des pesées</h3>
+    <div class="log-list" id="weightLogList"></div>
 
-<button onclick="saveWeight()">
-Enregistrer
-</button>
+    <!-- Barre de navigation avec vrais liens vers tes fichiers -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            <span>Planning</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            <span>Bourse</span>
+        </a>
+        <a href="sport.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-3V3.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5V5H8c-1.1 0-2 .9-2 2v4H3.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5H6v4c0 1.1.9 2 2 2h3v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h3c1.1 0 2-.9 2-2v-4h1.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/></svg>
+            <span>Sport</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.4 6.6.9 9.7 2.9 11.6c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+            <span>Mécanique</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Budget</span>
+        </a>
+    </nav>
 
-</div>
+    <script>
+        function saveWeight() {
+            const weightInput = document.getElementById('weightInput');
+            const val = parseFloat(weightInput.value);
+            if (!val) return alert("Indique un poids valide.");
 
-<div class="card">
-<h2>Objectif</h2>
+            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
+            localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
+            
+            weightInput.value = '';
+            displayWeightLogs();
+        }
 
-<p>Recomposition corporelle</p>
-<p>Prise de muscle + perte de gras</p>
-</div>
+        function displayWeightLogs() {
+            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            const currentDisplay = document.getElementById('currentWeightDisplay');
+            const diffDisplay = document.getElementById('weightDiffDisplay');
+            const logList = document.getElementById('weightLogList');
+            
+            logList.innerHTML = '';
+            
+            if(weightHistory.length > 0) {
+                currentDisplay.innerText = weightHistory[0].weight;
+                if(weightHistory.length > 1) {
+                    const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
+                    diffDisplay.innerText = diff > 0 ? `+${diff} kg depuis la dernière pesée` : `${diff} kg depuis la dernière pesée`;
+                } else {
+                    diffDisplay.innerText = "Première pesée enregistrée.";
+                }
+            } else {
+                currentDisplay.innerText = "--";
+                diffDisplay.innerText = "Aucune donnée enregistrée.";
+            }
 
-<div class="card">
-<h2>Programme du jour</h2>
+            weightHistory.forEach(item => {
+                logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
+            });
+        }
 
-<ul>
-<li>Développé couché haltères</li>
-<li>Rowing barre</li>
-<li>Curl barre EZ</li>
-<li>Extensions triceps</li>
-<li>Abdominaux</li>
-</ul>
-
-</div>
-
-<script>
-
-function saveWeight(){
-
-const value =
-document.getElementById("weightInput").value;
-
-if(value==="") return;
-
-localStorage.setItem(
-"jarvis_weight",
-value
-);
-
-document.getElementById(
-"weightDisplay"
-).innerHTML = value + " kg";
-
-}
-
-window.onload = function(){
-
-const saved =
-localStorage.getItem("jarvis_weight");
-
-if(saved){
-
-document.getElementById(
-"weightDisplay"
-).innerHTML = saved + " kg";
-
-}
-
-}
-
-</script>
-
+        // Charger l'historique dès l'ouverture de la page
+        window.onload = function() {
+            displayWeightLogs();
+        };
+    </script>
 </body>
 </html>
