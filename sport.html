@@ -52,6 +52,19 @@
             border: 1px solid var(--border-color);
         }
 
+        /* Encadré d'erreur de secours */
+        #debugError {
+            display: none;
+            background-color: rgba(255, 69, 58, 0.2);
+            border: 1px solid #ff453a;
+            color: #ff453a;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
         label {
             display: block;
             font-size: 14px;
@@ -70,13 +83,7 @@
             margin-bottom: 16px;
             box-sizing: border-box;
             font-size: 16px;
-            transition: border-color 0.2s;
             -webkit-appearance: none;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-color);
         }
 
         .btn-submit {
@@ -90,10 +97,6 @@
             font-size: 16px;
             cursor: pointer;
             -webkit-appearance: none;
-        }
-
-        .btn-submit:active {
-            opacity: 0.8;
         }
 
         .log-list {
@@ -114,7 +117,6 @@
             font-size: 14px;
         }
 
-        /* Barre de navigation basse fixe */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -140,8 +142,6 @@
             padding: 8px 0;
             font-size: 11px;
             font-weight: 500;
-            background: none;
-            border: none;
         }
 
         .nav-item svg {
@@ -164,6 +164,9 @@
 
     <h2 class="view-title">Suivi Sport</h2>
     
+    <!-- Zone de texte cachée qui affichera l'erreur s'il y en a une -->
+    <div id="debugError"></div>
+
     <div class="card">
         <div style="text-align: center; margin-bottom: 20px;">
             <span style="color: var(--text-muted); font-size: 14px;">Dernier poids enregistré</span>
@@ -173,18 +176,16 @@
             <p id="weightDiffDisplay" style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></p>
         </div>
 
-        <!-- Formulier avec soumission native -->
-        <form id="weightForm" onsubmit="saveWeight(event)">
+        <form id="weightForm" action="#" onsubmit="saveWeight(event)">
             <label for="weightInput">Nouvelle pesée (kg) :</label>
-            <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal">
-            <button type="submit" class="btn-submit">Enregistrer le poids</button>
+            <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal" required>
+            <button type="submit" class="btn-submit" id="btnSubmit">Enregistrer le poids</button>
         </form>
     </div>
 
     <h3 style="font-size: 16px; font-weight: 600; margin-top: 25px; margin-bottom: 10px;">Historique des pesées</h3>
     <div class="log-list" id="weightLogList"></div>
 
-    <!-- Barre de navigation basse -->
     <nav class="nav-bar">
         <a href="index.html" class="nav-item">
             <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
@@ -209,69 +210,88 @@
     </nav>
 
     <script>
-        function saveWeight(event) {
-            // Empêche le rechargement de la page obligatoire avec les formulaires
-            if (event) event.preventDefault();
+        // Capte toutes les erreurs globales pour les afficher à l'écran
+        window.onerror = function(msg, url, line) {
+            const errDiv = document.getElementById('debugError');
+            errDiv.style.display = 'block';
+            errDiv.innerHTML = `⚠️ Error: ${msg} <br> Line: ${line}`;
+            return false;
+        };
 
-            const weightInput = document.getElementById('weightInput');
-            const val = parseFloat(weightInput.value);
-            
-            if (!val || isNaN(val)) {
-                weightInput.style.borderColor = "#ff453a";
-                return false;
+        function showDebug(msg) {
+            const errDiv = document.getElementById('debugError');
+            errDiv.style.display = 'block';
+            errDiv.innerHTML = `📢 Info: ${msg}`;
+        }
+
+        function saveWeight(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
 
-            weightInput.style.borderColor = "var(--border-color)";
-
-            let weightHistory = [];
             try {
-                weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-            } catch(e) {
-                weightHistory = [];
-            }
+                const weightInput = document.getElementById('weightInput');
+                const val = parseFloat(weightInput.value);
+                
+                if (!val || isNaN(val)) {
+                    showDebug("Le poids saisi n'est pas un nombre valide.");
+                    return false;
+                }
 
-            weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
-            localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
-            
-            weightInput.value = '';
-            // Force la perte de focus du clavier sur iPhone
-            weightInput.blur(); 
-            
-            displayWeightLogs();
+                let weightHistory = [];
+                const localData = localStorage.getItem('jarvis_weight');
+                if (localData) {
+                    weightHistory = JSON.parse(localData);
+                }
+
+                weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
+                localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
+                
+                weightInput.value = '';
+                weightInput.blur(); 
+                
+                displayWeightLogs();
+            } catch (err) {
+                showDebug(`Erreur durant la sauvegarde : ${err.message}`);
+            }
             return false;
         }
 
         function displayWeightLogs() {
-            let weightHistory = [];
             try {
-                weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-            } catch(e) {
-                weightHistory = [];
-            }
-
-            const currentDisplay = document.getElementById('currentWeightDisplay');
-            const diffDisplay = document.getElementById('weightDiffDisplay');
-            const logList = document.getElementById('weightLogList');
-            
-            logList.innerHTML = '';
-            
-            if(Array.isArray(weightHistory) && weightHistory.length > 0) {
-                currentDisplay.innerText = weightHistory[0].weight;
-                if(weightHistory.length > 1) {
-                    const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
-                    diffDisplay.innerText = diff > 0 ? `+${diff} kg depuis la dernière pesée` : `${diff} kg depuis la dernière pesée`;
-                } else {
-                    diffDisplay.innerText = "Première pesée enregistrée.";
+                let weightHistory = [];
+                const localData = localStorage.getItem('jarvis_weight');
+                if (localData) {
+                    weightHistory = JSON.parse(localData);
                 }
-            } else {
-                currentDisplay.innerText = "--";
-                diffDisplay.innerText = "Aucune donnée enregistrée.";
-            }
 
-            if(Array.isArray(weightHistory)) {
-                weightHistory.forEach(item => {
-                    logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
-                });
+                const currentDisplay = document.getElementById('currentWeightDisplay');
+                const diffDisplay = document.getElementById('weightDiffDisplay');
+                const logList = document.getElementById('weightLogList');
+                
+                logList.innerHTML = '';
+                
+                if(weightHistory && weightHistory.length > 0) {
+                    currentDisplay.innerText = weightHistory[0].weight;
+                    if(weightHistory.length > 1) {
+                        const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
+                        diffDisplay.innerText = diff > 0 ? `+${diff} kg depuis la dernière pesée` : `${diff} kg depuis la dernière pesée`;
+                    } else {
+                        diffDisplay.innerText = "Première pesée enregistrée.";
+                    }
+                } else {
+                    currentDisplay.innerText = "--";
+                    diffDisplay.innerText = "Aucune donnée enregistrée.";
+                }
+
+                if(Array.isArray(weightHistory)) {
+                    weightHistory.forEach(item => {
+                        logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
+                    });
+                }
+            } catch (err) {
+                showDebug(`Erreur d'affichage de l'historique : ${err.message}`);
             }
         }
 
