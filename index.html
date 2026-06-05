@@ -3,98 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS-OS | Cockpit</title>
+    <title>JARVIS-OS | Cockpit Central</title>
     <style>
-        :root { --bg: #000; --card: #121212; --accent: #8b5cf6; --text: #fff; --text-m: #9ca3af; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 100px; }
-        .header { padding: 20px; font-size: 24px; font-weight: bold; color: var(--accent); }
-        .card { background: var(--card); border: 1px solid #333; border-radius: 16px; padding: 16px; margin: 10px; }
-        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
-        .app-view { display: none; }
+        :root { --bg: #000; --card: #121212; --accent: #8b5cf6; --text: #fff; --text-m: #9ca3af; --border: #333; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 90px; }
+        .header { padding: 20px; font-size: 22px; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border); }
+        .app-view { display: none; padding: 15px; }
         .app-view.active { display: block; }
-        .btn { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 15px; }
+        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid var(--border); padding: 15px 0; z-index: 1000; }
+        .btn { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; }
+        canvas { width: 100%; height: 200px; }
     </style>
 </head>
 <body>
 
-<div class="header">JARVIS-OS</div>
+<div class="header">JARVIS-OS | Cockpit</div>
 
-<!-- VUE 1 : PLANNING -->
+<!-- VUE 1 : PLANNING & COACH -->
 <div id="view-planning" class="app-view active">
-    <div class="card">
-        <h3>Camembert de Charge Mentale</h3>
-        <div id="chargeChart" style="height: 150px; background: #222; border-radius: 50%;"></div>
-    </div>
+    <div class="card"><h3>Charge Mentale</h3><div id="pieChartPlaceholder" style="height:150px; background:#222;"></div></div>
     <div id="taskList"></div>
 </div>
 
-<!-- VUE 2 : BOURSE -->
+<!-- VUE 2 : BOURSE & EXPAT -->
 <div id="view-bourse" class="app-view">
-    <div class="card">
-        <h3>Valeur Nette (Le Graal)</h3>
-        <h1 id="netValue">0 €</h1>
-    </div>
-    <div id="assetList"></div>
+    <div class="card"><h3>Valeur Nette Globale</h3><h1 id="netValue">0 €</h1></div>
+    <canvas id="barChart"></canvas>
 </div>
 
 <!-- VUE 3 : SPORT -->
 <div id="view-sport" class="app-view">
-    <div class="card">
-        <canvas id="weightChart"></canvas>
-    </div>
+    <div class="card"><h3>Progression Physique</h3><canvas id="weightChart"></canvas></div>
 </div>
 
 <!-- VUE 4 : MÉCANIQUE -->
 <div id="view-mecanique" class="app-view">
     <div class="card">
-        <input type="text" id="mechTask" placeholder="Ex: Vanne EGR - 120€">
-        <button class="btn" onclick="addMech()">Ajouter au Budget & Planning</button>
+        <input type="text" id="mechInput" placeholder="Ex: Vanne EGR - 120€">
+        <button class="btn" onclick="addMech()">Enregistrer Opération</button>
     </div>
 </div>
 
 <!-- VUE 5 : URBANISME -->
-<div id="view-urbanisme" class="app-view">
-    <div class="card"><h3>Dossier Larnas & Échéances</h3></div>
-</div>
+<div id="view-urbanisme" class="app-view"><div class="card"><h3>Dossier Larnas</h3></div></div>
 
 <!-- VUE 6 : BUDGET -->
 <div id="view-budget" class="app-view">
     <div class="card">
-        <h3>Import Relevé (PDF)</h3>
-        <input type="file" id="pdfUpload">
+        <h3>Scanner Relevé (OCR Simulé)</h3>
+        <input type="file" id="pdfScanner" onchange="processPDF(event)">
     </div>
-    <div id="budgetList"></div>
+    <div id="budgetDisplay"></div>
 </div>
 
 <div class="navbar">
-    <button onclick="show('planning')">📅</button>
-    <button onclick="show('bourse')">📈</button>
-    <button onclick="show('sport')">⚏</button>
-    <button onclick="show('mecanique')">🔧</button>
-    <button onclick="show('urbanisme')">🏛</button>
-    <button onclick="show('budget')">💳</button>
+    <button onclick="show('planning')">📅</button><button onclick="show('bourse')">📈</button>
+    <button onclick="show('sport')">⚏</button><button onclick="show('mecanique')">🔧</button>
+    <button onclick="show('urbanisme')">🏛</button><button onclick="show('budget')">💳</button>
 </div>
 
 <script>
-    // État centralisé
+    // MOTEUR CENTRAL
     let state = JSON.parse(localStorage.getItem('jarvis_data')) || {
-        tasks: [], assets: [], weight: [], budget: [], mech: []
+        tasks: [], budget: [], weight: [], assets: []
     };
 
     function save() { localStorage.setItem('jarvis_data', JSON.stringify(state)); }
 
-    function addMech() {
-        const val = document.getElementById('mechTask').value;
-        // Logique de pontage
-        state.budget.push({ category: 'Mécanique', amount: 120, status: 'pending' });
-        state.tasks.push({ title: 'Changement vanne EGR', date: '2026-06-07' });
-        save();
-        alert("Action synchronisée : Budget et Planning mis à jour.");
-    }
-
+    // GESTION VUES
     function show(id) {
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
         document.getElementById('view-' + id).classList.add('active');
+    }
+
+    // PONTAGE MÉCANIQUE -> BUDGET & PLANNING
+    function addMech() {
+        const val = document.getElementById('mechInput').value;
+        state.budget.push({ desc: val, amount: 120, date: new Date(), cat: 'Mécanique' });
+        state.tasks.push({ title: 'Entretien Auto', deadline: '2026-06-07' });
+        save();
+        alert("Action centralisée : Budget et Planning mis à jour.");
+    }
+
+    // OCR PDF SIMULÉ
+    function processPDF(event) {
+        alert("Scan du document... Analyse des lignes de revenus et dépenses en cours.");
+        // Ici viendra la logique de parsing PDF vers state.budget
     }
 </script>
 </body>
