@@ -1,27 +1,60 @@
-<!-- Remplace la section script dans ton index.html par celle-ci -->
-<script>
-    let db = JSON.parse(localStorage.getItem('jarvis_db')) || { 
-        salary: 0, immo: 200000, bourse: 15000, cash: 5000, taxProvision: 0.20 
-    };
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS-OS</title>
+    <style>
+        body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 80px; }
+        .app-view { display: none; padding: 20px; }
+        .app-view.active { display: block; }
+        .card { background: #111; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
+        h3 { color: #8b5cf6; margin-top: 0; }
+        input { background: #222; border: 1px solid #444; color: #fff; padding: 10px; width: 90%; border-radius: 8px; }
+        button { background: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
 
-    function updateFinance() {
-        // Récupère la valeur du champ salaire
-        let input = document.getElementById('incomeInput');
-        if(input) db.salary = parseFloat(input.value) || 0;
-        
-        // Calcul du "Graal" (Valeur Nette)
-        const afterTax = db.salary * (1 - db.taxProvision);
-        const total = db.immo + db.bourse + db.cash + afterTax;
-        
-        // Affiche la valeur dans la carte
-        document.getElementById('netValueDisplay').innerText = total.toLocaleString() + ' €';
-        localStorage.setItem('jarvis_db', JSON.stringify(db));
+<div id="view-planning" class="app-view active">
+    <h3>Cockpit Global</h3>
+    <div class="card"><h1 id="netValue">0 €</h1><p>Valeur Nette Totale</p></div>
+</div>
+
+<div id="view-budget" class="app-view">
+    <h3>Budget</h3>
+    <div class="card">
+        <input type="number" id="salary" placeholder="Salaire net">
+        <button onclick="saveData()">Enregistrer</button>
+    </div>
+    <div id="budgetDisplay"></div>
+</div>
+
+<div class="navbar">
+    <button onclick="show('planning')">📅</button>
+    <button onclick="show('budget')">💳</button>
+</div>
+
+<script>
+    function show(id) {
+        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-' + id).classList.add('active');
     }
 
-    // Force l'affichage au chargement pour ne plus avoir "0 €"
-    window.onload = () => {
-        let input = document.getElementById('incomeInput');
-        if(input) input.value = db.salary;
-        updateFinance();
-    };
+    function saveData() {
+        const salary = document.getElementById('salary').value;
+        localStorage.setItem('jarvis_data', JSON.stringify({ salary }));
+        render();
+    }
+
+    function render() {
+        const data = JSON.parse(localStorage.getItem('jarvis_data')) || { salary: 0 };
+        document.getElementById('netValue').innerText = data.salary + ' €';
+        document.getElementById('budgetDisplay').innerHTML = `<div class="card">Salaire enregistré : ${data.salary} €</div>`;
+    }
+
+    render(); // Initialise l'affichage au chargement
 </script>
+</body>
+</html>
