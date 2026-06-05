@@ -1,396 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS OS V18</title>
+    <title>Jarvis-OS</title>
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="stylesheet" href="css/style.css">
-    
     <style>
-        .app-view { display: block; }
-        .hidden { display: none !important; }
-        .back-btn {
-            background: #1e293b;
-            color: #38bdf8;
-            border: 1px solid #0284c7;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            width: 100%;
-            justify-content: center;
+        :root {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --accent-color: #ff9f0a;
+            --text-color: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #1c1c1e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 90px;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        .back-btn:active { background: #0f172a; }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid #1e293b;
-            color: #fff;
-            border-radius: 12px;
-            margin: 8px 0 16px 0;
-            box-sizing: border-box;
-            font-size: 16px; /* Évite le zoom auto de l'iPhone */
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.4);
-        }
-        .btn-submit:active { background: #0369a1; }
-        
-        /* Style des listes d'historique */
-        .log-list {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .log-item {
-            background: #0f172a;
-            border: 1px solid #1e293b;
-            padding: 10px 14px;
-            border-radius: 10px;
+
+        /* En-tête */
+        header {
+            padding: 20px 16px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
+            align-items: baseline;
+            border-bottom: 1px solid var(--border-color);
         }
-        .alert-box {
-            background: rgba(234, 179, 8, 0.1);
-            border: 1px solid #eab308;
-            color: #facc15;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            font-size: 13px;
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 0;
+        }
+
+        header .date {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Conteneur principal */
+        .container {
+            padding: 16px;
+        }
+
+        .view-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Cartes & Modules */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* Vues */
+        .app-view {
+            display: none;
+        }
+
+        .app-view.active {
+            display: block;
+        }
+
+        /* Barre de navigation basse */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 75px;
+            background-color: #0a0a0a;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            padding: 8px 0;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 5px;
+            fill: currentColor;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
         }
     </style>
 </head>
-
 <body>
 
-<div class="app">
+    <header>
+        <h1>Jarvis-OS</h1>
+        <div class="date" id="current-date">ven. 5 juin</div>
+    </header>
 
-    <!-- ==================== VUE 1 : TABLEAU DE BORD PRINCIPAL ==================== -->
-    <div id="view-dashboard" class="app-view">
-        <header class="topbar">
-            <div>
-                <h1>JARVIS</h1>
-                <p>Ultimate Cognitive OS</p>
-            </div>
-            <div class="online">
-                <div class="dot"></div>
-                <span>Système opérationnel</span>
-            </div>
-        </header>
-
-        <section class="stats">
+    <div class="container">
+        <!-- VUE : PLANNING -->
+        <div id="view-planning" class="app-view active">
+            <h2 class="view-title">Mon Planning</h2>
             <div class="card">
-                <h2>🧠 État Cognitif</h2>
-                <div class="stat-line"><span>Focus</span><strong>72%</strong></div>
-                <div class="bar"><div class="fill blue" style="width:72%"></div></div>
-                
-                <div class="stat-line"><span>Énergie</span><strong>64%</strong></div>
-                <div class="bar"><div class="fill green" style="width:64%"></div></div>
-                
-                <div class="stat-line"><span>Discipline</span><strong>81%</strong></div>
-                <div class="bar"><div class="fill purple" style="width:81%"></div></div>
+                <p>Le module planning (frise chronologique) va être injecté ici.</p>
             </div>
-        </section>
+        </div>
 
-        <section class="missions">
+        <!-- VUE : BOURSE -->
+        <div id="view-bourse" class="app-view">
+            <h2 class="view-title">Bourse & Finances</h2>
             <div class="card">
-                <h2>🎯 Mission du jour</h2>
-                <ul id="missionList">
-                    <li>✔️ Vérifier portefeuille ETF</li>
-                    <li>✔️ Suivi Nissan Qashqai</li>
-                    <li>✔️ Dossier Larnas</li>
-                    <li>✔️ Séance sport</li>
-                </ul>
+                <p>Suivi des actifs et performances en temps réel.</p>
             </div>
-        </section>
+        </div>
 
-        <section class="quick-actions">
-            <div class="action-card" onclick="switchView('sport')">
-                <h3>🏋️ Sport</h3>
-                <p id="dash-sport-p">Poids suivi en direct</p>
-            </div>
-
-            <div class="action-card" onclick="switchView('planning')">
-                <h3>📅 Planning</h3>
-                <p>Organisation & tâches</p>
-            </div>
-
-            <div class="action-card" onclick="switchView('investissements')">
-                <h3>📈 Investissements</h3>
-                <p>ETF • patrimoine • finances</p>
-            </div>
-
-            <div class="action-card" onclick="switchView('mecanique')">
-                <h3>🔧 Mécanique</h3>
-                <p id="dash-meca-p">Alertes entretiens auto</p>
-            </div>
-
-            <div class="action-card" onclick="alert('Module Urbanisme en préparation')">
-                <h3>🏡 Urbanisme</h3>
-                <p>Dossier Larnas & administratif</p>
-            </div>
-        </section>
-
-        <section class="assistant">
+        <!-- VUE : SPORT -->
+        <div id="view-sport" class="app-view">
+            <h2 class="view-title">Suivi Sport</h2>
             <div class="card">
-                <h2>🤖 Assistant JARVIS</h2>
-                <div class="assistant-box" id="assistant-summary">
-                    Analyse des systèmes en cours...
-                </div>
+                <p>Historique des pesées et entraînements.</p>
             </div>
-        </section>
+        </div>
+
+        <!-- VUE : MÉCANIQUE -->
+        <div id="view-mecanique" class="app-view">
+            <h2 class="view-title">Mécanique Auto</h2>
+            <div class="card">
+                <p>Gestion des entretiens et alertes vidange.</p>
+            </div>
+        </div>
+
+        <!-- VUE : BUDGET -->
+        <div id="view-budget" class="app-view">
+            <h2 class="view-title">Mon Budget</h2>
+            <div class="card">
+                <p>Visualisation des dépenses et épargne.</p>
+            </div>
+        </div>
     </div>
 
+    <!-- Barre de navigation -->
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('planning')">
+            <!-- Icone Calendrier -->
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            <span>Planning</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('bourse')">
+            <!-- Icone Bourse -->
+            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            <span>Bourse</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('sport')">
+            <!-- Icone Sport (Haltère) -->
+            <svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-3V3.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5V5H8c-1.1 0-2 .9-2 2v4H3.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5H6v4c0 1.1.9 2 2 2h3v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h3c1.1 0 2-.9 2-2v-4h1.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/></svg>
+            <span>Sport</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('mecanique')">
+            <!-- Icone Clé de mécanicien -->
+            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.4 6.6.9 9.7 2.9 11.6c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+            <span>Mécanique</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('budget')">
+            <!-- Icone Portefeuille -->
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Budget</span>
+        </button>
+    </nav>
 
-    <!-- ==================== VUE 2 : MODULE SPORT ==================== -->
-    <div id="view-sport" class="app-view hidden">
-        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
-        <section class="stats">
-            <div class="card">
-                <h2>🏋️ Suivi Sport & Musculation</h2>
-                <div style="margin: 15px 0; font-size: 16px;">
-                    Poids actuel : <strong style="color:#38bdf8; font-size:24px;" id="currentWeightDisplay">76</strong> <span style="color:#38bdf8; font-size:18px;">kg</span>
-                    <p id="weightDiffDisplay" style="font-size:12px; margin-top:4px; color:#94a3b8;"></p>
-                </div>
-                
-                <label for="weightInput">Enregistrer une pesée :</label>
-                <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput">
-                <button class="btn-submit" onclick="saveWeight()">Enregistrer</button>
-                
-                <h3 style="margin-top:25px; color:#38bdf8; border-bottom: 1px solid #1e293b; padding-bottom:5px;">📋 Historique des pesées</h3>
-                <div class="log-list" id="weightLogList"></div>
-            </div>
-        </section>
-    </div>
-
-
-    <!-- ==================== VUE 3 : MODULE PLANNING ==================== -->
-    <div id="view-planning" class="app-view hidden">
-        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
-        <section class="stats">
-            <div class="card">
-                <h2>📅 Planning Global</h2>
-                <div style="background:#0f172a; border-radius:12px; padding:15px; margin-top:15px; text-align:center; color:#94a3b8;">
-                    🔵 Poste du matin (Usine)<br><br>
-                    🟢 Séance de musculation (Sport)
-                </div>
-            </div>
-        </section>
-    </div>
-
-
-    <!-- ==================== VUE 4 : MODULE MÉCANIQUE ==================== -->
-    <div id="view-mecanique" class="app-view hidden">
-        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
-        <section class="stats">
-            <div class="card">
-                <h2>🔧 Carnet d'Entretien Mécanique</h2>
-                
-                <div id="mecaAlerts"></div>
-                
-                <label for="vehicule-select">Véhicule concerné :</label>
-                <select id="vehicule-select" onchange="updateMecaniqueView()">
-                    <option value="Nissan Qashqai">Nissan Qashqai</option>
-                    <option value="Peugeot Boxer">Peugeot Boxer</option>
-                    <option value="Opel Corsa">Opel Corsa</option>
-                </select>
-
-                <label for="intervInput">Type d'intervention :</label>
-                <input type="text" placeholder="Ex: Vidange, Changement Vanne EGR, Filtres..." id="intervInput">
-                
-                <label for="kmInput">Kilométrage au compteur :</label>
-                <input type="number" placeholder="Ex: 145000" id="kmInput">
-                
-                <button class="btn-submit" onclick="saveMaintenance()">Enregistrer l'intervention</button>
-                
-                <h3 style="margin-top:25px; color:#38bdf8; border-bottom: 1px solid #1e293b; padding-bottom:5px;">📋 Historique du véhicule</h3>
-                <div class="log-list" id="mecaLogList"></div>
-            </div>
-        </section>
-    </div>
-
-
-    <!-- ==================== VUE 5 : MODULE INVESTISSEMENTS ==================== -->
-    <div id="view-investissements" class="app-view hidden">
-        <button class="back-btn" onclick="switchView('dashboard')">⬅️ Retour au Tableau de Bord</button>
-        <section class="stats">
-            <div class="card">
-                <h2>📈 Investissements & Patrimoine</h2>
-                <div style="margin-bottom:15px;">
-                    <p>Suivi Bourse (Interactive Brokers)</p>
-                    <p style="font-size:18px; color:#22c55e; font-weight:bold; margin-top:5px;">Objectif : Expatriation 2029-2030</p>
-                </div>
-                <div class="stat-line"><span>Allocation ETF S&P 500</span><strong>100%</strong></div>
-                <div class="bar"><div class="fill blue" style="width:100%"></div></div>
-            </div>
-        </section>
-    </div>
-
-</div>
-
-<!-- LOGIQUE APPLICATIVE AVANCÉE -->
-<script>
-    // Navigation
-    function switchView(viewId) {
-        document.querySelectorAll('.app-view').forEach(view => view.classList.add('hidden'));
-        document.getElementById('view-' + viewId).classList.remove('hidden');
-        window.scrollTo(0, 0);
-        
-        if(viewId === 'sport') displayWeightLogs();
-        if(viewId === 'mecanique') updateMecaniqueView();
-        if(viewId === 'dashboard') updateAssistantSummary();
-    }
-
-    // ==================== LOGIQUE SPORT ====================
-    function saveWeight() {
-        const weightInput = document.getElementById('weightInput');
-        const val = parseFloat(weightInput.value);
-        if (!val) return alert("Indique un poids valide.");
-
-        let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-        weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
-        localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
-        
-        weightInput.value = '';
-        displayWeightLogs();
-        updateAssistantSummary();
-    }
-
-    function displayWeightLogs() {
-        let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-        const currentDisplay = document.getElementById('currentWeightDisplay');
-        const diffDisplay = document.getElementById('weightDiffDisplay');
-        const logList = document.getElementById('weightLogList');
-        
-        logList.innerHTML = '';
-        
-        if(weightHistory.length > 0) {
-            currentDisplay.innerText = weightHistory[0].weight;
-            if(weightHistory.length > 1) {
-                const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
-                diffDisplay.innerText = diff > 0 ? `+${diff} kg depuis la dernière pesée` : `${diff} kg depuis la dernière pesée`;
-            } else {
-                diffDisplay.innerText = "Première pesée enregistrée.";
-            }
-        } else {
-            currentDisplay.innerText = "76";
-            diffDisplay.innerText = "Valeur d'origine par défaut.";
-        }
-
-        weightHistory.forEach(item => {
-            logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
-        });
-    }
-
-    // ==================== LOGIQUE MÉCANIQUE ====================
-    function saveMaintenance() {
-        const vehicle = document.getElementById('vehicule-select').value;
-        const intervention = document.getElementById('intervInput').value;
-        const km = parseInt(document.getElementById('kmInput').value);
-
-        if (!intervention || !km) return alert("Remplis l'intervention et le kilométrage.");
-
-        let mecaHistory = JSON.parse(localStorage.getItem('jarvis_meca')) || [];
-        mecaHistory.unshift({ vehicle, intervention, km, date: new Date().toLocaleDateString('fr-FR') });
-        localStorage.setItem('jarvis_meca', JSON.stringify(mecaHistory));
-
-        document.getElementById('intervInput').value = '';
-        document.getElementById('kmInput').value = '';
-        
-        updateMecaniqueView();
-        updateAssistantSummary();
-    }
-
-    function updateMecaniqueView() {
-        const currentVehicle = document.getElementById('vehicule-select').value;
-        let mecaHistory = JSON.parse(localStorage.getItem('jarvis_meca')) || [];
-        const logList = document.getElementById('mecaLogList');
-        const alertBox = document.getElementById('mecaAlerts');
-        
-        logList.innerHTML = '';
-        alertBox.innerHTML = '';
-
-        // Filtrer l'historique pour le véhicule choisi
-        const filtered = mecaHistory.filter(item => item.vehicle === currentVehicle);
-        
-        // Système d'alerte intelligent pour la vidange (15 000 km)
-        const lastVidange = filtered.find(item => item.intervention.toLowerCase().includes('vidange'));
-        if(lastVidange) {
-            const currentKm = filtered[0].km; // Dernier kilométrage connu
-            const kmDepuisVidange = currentKm - lastVidange.km;
-            const kmRestants = 15000 - kmDepuisVidange;
-            
-            if(kmRestants <= 2000 && kmRestants > 0) {
-                alertBox.innerHTML = `<div class="alert-box">⚠️ Attention : Prochaine Vidange requise dans ${kmRestants} km pour ton ${currentVehicle}.</div>`;
-            } else if (kmRestants <= 0) {
-                alertBox.innerHTML = `<div class="alert-box" style="background:rgba(239,68,68,0.1); border-color:#ef4444; color:#f87171;">🚨 Alerte : Vidange dépassée de ${Math.abs(kmRestants)} km !</div>`;
-            } else {
-                alertBox.innerHTML = `<div class="alert-box" style="background:rgba(34,197,94,0.1); border-color:#22c55e; color:#4ade80;">✅ Vidange OK (Reste ${kmRestants} km tranquilles).</div>`;
-            }
-        }
-
-        if(filtered.length === 0) {
-            logList.innerHTML = '<p style="color:#64748b; text-align:center;">Aucune intervention enregistrée.</p>';
-        } else {
-            filtered.forEach(item => {
-                logList.innerHTML += `<div class="log-item"><div><strong>${item.intervention}</strong><br><small style="color:#64748b;">${item.date}</small></div> Mauris <strong>${item.km.toLocaleString()} km</strong></div>`;
+    <script>
+        function switchTab(tabId) {
+            // Masquer toutes les vues
+            document.querySelectorAll('.app-view').forEach(view => {
+                view.classList.remove('active');
             });
+            // Enlever la classe active de tous les boutons de navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Activer la vue et le bouton correspondants
+            document.getElementById('view-' + tabId).classList.add('active');
+            
+            // Trouver le bouton cliqué pour lui mettre la couleur orange
+            const buttons = document.querySelectorAll('.nav-item');
+            const tabs = ['planning', 'bourse', 'sport', 'mecanique', 'budget'];
+            const index = tabs.indexOf(tabId);
+            if(index !== -1) {
+                buttons[index].classList.add('active');
+            }
+            
+            window.scrollTo(0, 0);
         }
-    }
 
-    // ==================== INTELLIGENCE ASSISTANT (HOME) ====================
-    function updateAssistantSummary() {
-        const summaryBox = document.getElementById('assistant-summary');
-        let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
-        let mecaHistory = JSON.parse(localStorage.getItem('jarvis_meca')) || [];
-        
-        let text = `Bienvenue Grégory.<br><br>`;
-        
-        if(weightHistory.length > 0) {
-            text += `🏃 **Sport :** Dernier poids de ${weightHistory[0].weight} kg synchronisé.<br>`;
-        }
-        
-        if(mecaHistory.length > 0) {
-            text += `🔧 **Mécanique :** ${mecaHistory.length} interventions enregistrées. Dernier check sur le ${mecaHistory[0].vehicle}.<br>`;
-        } else {
-            text += `🔧 **Mécanique :** Aucun entretien noté pour l'instant.<br>`;
-        }
-        
-        text += `<br>✨ *Systèmes nominaux. Prêt à intégrer tes prochains graphiques.*`;
-        summaryBox.innerHTML = text;
-    }
-
-    // Lancement automatique au chargement
-    window.onload = function() {
-        updateAssistantSummary();
-    };
-</script>
-
-<script src="js/app.js"></script>
-
+        // Optionnel : Mettre à jour la date dynamiquement au chargement
+        window.onload = function() {
+            const options = { weekday: 'short', day: 'numeric', month: 'short' };
+            const today = new Date();
+            document.getElementById('current-date').innerText = today.toLocaleDateString('fr-FR', options);
+        };
+    </script>
 </body>
 </html>
