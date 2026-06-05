@@ -71,6 +71,7 @@
             box-sizing: border-box;
             font-size: 16px;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
         }
 
         input:focus {
@@ -88,6 +89,7 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
+            -webkit-appearance: none;
         }
 
         .btn-submit:active {
@@ -171,9 +173,12 @@
             <p id="weightDiffDisplay" style="font-size: 12px; margin-top: 4px; color: var(--text-muted);"></p>
         </div>
 
-        <label for="weightInput">Nouvelle pesée (kg) :</label>
-        <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput">
-        <button class="btn-submit" onclick="saveWeight()">Enregistrer le poids</button>
+        <!-- Formulier avec soumission native -->
+        <form id="weightForm" onsubmit="saveWeight(event)">
+            <label for="weightInput">Nouvelle pesée (kg) :</label>
+            <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal">
+            <button type="submit" class="btn-submit">Enregistrer le poids</button>
+        </form>
     </div>
 
     <h3 style="font-size: 16px; font-weight: 600; margin-top: 25px; margin-bottom: 10px;">Historique des pesées</h3>
@@ -204,34 +209,53 @@
     </nav>
 
     <script>
-        function saveWeight() {
+        function saveWeight(event) {
+            // Empêche le rechargement de la page obligatoire avec les formulaires
+            if (event) event.preventDefault();
+
             const weightInput = document.getElementById('weightInput');
             const val = parseFloat(weightInput.value);
             
             if (!val || isNaN(val)) {
                 weightInput.style.borderColor = "#ff453a";
-                return;
+                return false;
             }
 
             weightInput.style.borderColor = "var(--border-color)";
 
-            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            let weightHistory = [];
+            try {
+                weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            } catch(e) {
+                weightHistory = [];
+            }
+
             weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
             localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
             
             weightInput.value = '';
+            // Force la perte de focus du clavier sur iPhone
+            weightInput.blur(); 
+            
             displayWeightLogs();
+            return false;
         }
 
         function displayWeightLogs() {
-            let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            let weightHistory = [];
+            try {
+                weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+            } catch(e) {
+                weightHistory = [];
+            }
+
             const currentDisplay = document.getElementById('currentWeightDisplay');
             const diffDisplay = document.getElementById('weightDiffDisplay');
             const logList = document.getElementById('weightLogList');
             
             logList.innerHTML = '';
             
-            if(weightHistory.length > 0) {
+            if(Array.isArray(weightHistory) && weightHistory.length > 0) {
                 currentDisplay.innerText = weightHistory[0].weight;
                 if(weightHistory.length > 1) {
                     const diff = (weightHistory[0].weight - weightHistory[1].weight).toFixed(1);
@@ -244,9 +268,11 @@
                 diffDisplay.innerText = "Aucune donnée enregistrée.";
             }
 
-            weightHistory.forEach(item => {
-                logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
-            });
+            if(Array.isArray(weightHistory)) {
+                weightHistory.forEach(item => {
+                    logList.innerHTML += `<div class="log-item"><span>📅 ${item.date}</span><strong>${item.weight} kg</strong></div>`;
+                });
+            }
         }
 
         window.onload = function() {
