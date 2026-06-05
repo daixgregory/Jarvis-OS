@@ -1,26 +1,114 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS-OS | Système Central</title>
-    <style>
-        :root { --bg: #000; --card: #121212; --accent: #8b5cf6; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 100px; }
-        .view { display: none; padding: 20px; }
-        .view.active { display: block; }
-        .card { background: var(--card); border: 1px solid #333; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; }
-        button { background: none; border: none; color: #fff; font-size: 24px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        .btn-main { background: var(--accent); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; width: 100%; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JARVIS-OS</title>
+
+<style>
+:root{
+    --bg:#000;
+    --card:#121212;
+    --accent:#8b5cf6;
+    --text:#fff;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    margin:0;
+    padding-bottom:90px;
+}
+
+.view{
+    display:none;
+    padding:20px;
+}
+
+.view.active{
+    display:block;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid #333;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.card h1,
+.card h2{
+    margin-top:0;
+}
+
+.nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+    background:#000;
+    border-top:1px solid #333;
+    padding:12px 0;
+}
+
+.nav button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:26px;
+}
+
+input{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    margin-bottom:12px;
+    border-radius:10px;
+    border:1px solid #444;
+    background:#222;
+    color:white;
+}
+
+.btn-main{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--accent);
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.progress{
+    width:100%;
+    height:12px;
+    background:#222;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-bar{
+    height:100%;
+    background:#00d26a;
+    width:0%;
+}
+</style>
 </head>
+
 <body>
+
+<!-- DASHBOARD -->
 
 <div id="planning" class="view active">
 
-    <h2>🛸 JARVIS-OS</h2>
+    <h1>🛸 JARVIS-OS</h1>
 
     <div class="card">
         <h1 id="netValue">0 €</h1>
@@ -30,6 +118,10 @@
     <div class="card">
         <h2 id="goalProgress">0 %</h2>
         <p>🎯 Objectif Paraguay 2030 (500 000 €)</p>
+
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
     </div>
 
     <div class="card">
@@ -44,126 +136,212 @@
 
     <div class="card">
         <h3>🤖 Coach JARVIS</h3>
-        <p id="jarvisAdvice">
-            Bienvenue Commandant.
-        </p>
+        <p id="jarvisAdvice">Bienvenue Commandant.</p>
     </div>
 
 </div>
+
+<!-- INVESTISSEMENTS -->
 
 <div id="bourse" class="view">
-    <h3>Investissements</h3>
+
+    <h2>📈 Investissements</h2>
+
     <div class="card">
-        <input type="number" id="etfInput" placeholder="Valeur ETF (€)">
-        <button class="btn-main" onclick="saveAsset()">Enregistrer</button>
+
+        <input
+            type="number"
+            id="etfInput"
+            placeholder="Valeur ETF (€)"
+        >
+
+        <button
+            class="btn-main"
+            onclick="saveAsset()"
+        >
+            Enregistrer
+        </button>
+
     </div>
+
 </div>
+
+<!-- MECANIQUE -->
 
 <div id="meca" class="view">
-    <h3>Mécanique</h3>
+
+    <h2>🔧 Mécanique</h2>
+
     <div class="card">
-        <input type="text" id="mecaDesc" placeholder="Intervention">
-        <input type="number" id="mecaPrice" placeholder="Prix">
-        <button class="btn-main" onclick="saveMeca()">Ajouter au Budget</button>
+
+        <input
+            type="text"
+            id="mecaDesc"
+            placeholder="Intervention"
+        >
+
+        <input
+            type="number"
+            id="mecaPrice"
+            placeholder="Prix (€)"
+        >
+
+        <button
+            class="btn-main"
+            onclick="saveMeca()"
+        >
+            Ajouter au budget
+        </button>
+
     </div>
+
 </div>
+
+<!-- BUDGET -->
 
 <div id="budget" class="view">
-    <h3>Budget</h3>
+
+    <h2>💳 Budget</h2>
+
     <div id="budgetLog"></div>
+
 </div>
 
+<!-- NAVIGATION -->
+
 <div class="nav">
+
     <button onclick="switchView('planning')">📅</button>
+
     <button onclick="switchView('bourse')">📈</button>
+
     <button onclick="switchView('meca')">🔧</button>
+
     <button onclick="switchView('budget')">💳</button>
+
 </div>
 
 <script>
-    // MOTEUR D'ÉTAT UNIFIÉ
-    let db = JSON.parse(localStorage.getItem('jarvis_data')) || { assets: 0, budget: [] };
 
-    function switchView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
+let db =
+JSON.parse(
+    localStorage.getItem("jarvis_data")
+)
+||
+{
+    assets:0,
+    budget:[]
+};
 
-    function saveAsset() {
-        db.assets = parseFloat(document.getElementById('etfInput').value) || 0;
-        localStorage.setItem('jarvis_data', JSON.stringify(db));
-        render();
-    }
+function switchView(id){
 
-    function saveMeca() {
-        const desc = document.getElementById('mecaDesc').value;
-        const price = parseFloat(document.getElementById('mecaPrice').value);
-        db.budget.push({ desc, price });
-        localStorage.setItem('jarvis_data', JSON.stringify(db));
-        render();
-    }
+    document
+        .querySelectorAll(".view")
+        .forEach(view =>
+            view.classList.remove("active")
+        );
 
-function render() {
+    document
+        .getElementById(id)
+        .classList.add("active");
+}
 
-    // Ligne Verte
-    document.getElementById('netValue').innerText =
-        db.assets.toLocaleString() + ' €';
+function saveAsset(){
 
-    // Objectif Paraguay
+    db.assets =
+        parseFloat(
+            document.getElementById("etfInput").value
+        ) || 0;
+
+    localStorage.setItem(
+        "jarvis_data",
+        JSON.stringify(db)
+    );
+
+    render();
+}
+
+function saveMeca(){
+
+    const desc =
+        document.getElementById("mecaDesc").value;
+
+    const price =
+        parseFloat(
+            document.getElementById("mecaPrice").value
+        ) || 0;
+
+    db.budget.push({
+        desc,
+        price
+    });
+
+    localStorage.setItem(
+        "jarvis_data",
+        JSON.stringify(db)
+    );
+
+    render();
+}
+
+function render(){
+
     const objectif = 500000;
 
     const progression =
-        ((db.assets / objectif) * 100).toFixed(1);
+        ((db.assets / objectif) * 100);
 
-    document.getElementById('goalProgress').innerText =
-        progression + ' %';
-
-    // Patrimoine liquide
-    document.getElementById('liquidAssets').innerText =
-        db.assets.toLocaleString() + ' €';
-
-    // Autonomie
     const autonomie =
-        (db.assets / 24000).toFixed(1);
+        (db.assets / 24000);
 
-    document.getElementById('autonomy').innerText =
-        autonomie + ' années';
+    document.getElementById("netValue").innerText =
+        db.assets.toLocaleString("fr-FR") + " €";
 
-    // Coach JARVIS
-    let conseil = '';
+    document.getElementById("goalProgress").innerText =
+        progression.toFixed(1) + " %";
 
-    if (progression < 25) {
-        conseil = 'Accélérer l’épargne et les investissements.';
+    document.getElementById("liquidAssets").innerText =
+        db.assets.toLocaleString("fr-FR") + " €";
+
+    document.getElementById("autonomy").innerText =
+        autonomie.toFixed(1) + " années";
+
+    document.getElementById("progressBar").style.width =
+        Math.min(progression,100) + "%";
+
+    let conseil = "";
+
+    if(progression < 25){
+        conseil =
+        "Accélérer l'épargne et les investissements.";
     }
-    else if (progression < 50) {
-        conseil = 'Bonne progression. Continuer le plan.';
+    else if(progression < 50){
+        conseil =
+        "Bonne progression. Continuer le plan.";
     }
-    else if (progression < 75) {
-        conseil = 'Objectif Paraguay en bonne voie.';
+    else if(progression < 75){
+        conseil =
+        "Objectif Paraguay en bonne voie.";
     }
-    else {
-        conseil = 'Objectif proche. Maintenir le cap.';
+    else{
+        conseil =
+        "Objectif proche. Maintenir le cap.";
     }
 
-    document.getElementById('jarvisAdvice').innerText =
+    document.getElementById("jarvisAdvice").innerText =
         conseil;
 
-    // Budget
-    document.getElementById('budgetLog').innerHTML =
-        db.budget.map(item =>
-            `<div class="card">${item.desc} : ${item.price} €</div>`
-        ).join('');
+    document.getElementById("budgetLog").innerHTML =
+        db.budget.map(item => `
+            <div class="card">
+                ${item.desc} : ${item.price} €
+            </div>
+        `).join("");
 }
-const objectif = 500000;
 
-const progression =
-    ((db.assets / objectif) * 100).toFixed(1);
+render();
 
-const autonomie =
-    (db.assets / 24000).toFixed(1);
-    render(); // Initialisation immédiate
 </script>
+
 </body>
 </html>
-
-
