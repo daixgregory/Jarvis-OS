@@ -1,101 +1,107 @@
-// Variable globale pour stocker l'historique du poids
+// --- VARIABLES GLOBALES (STOCKAGE TÉLÉPHONE) ---
 let weightHistory = JSON.parse(localStorage.getItem('jarvis_weight')) || [];
+let portfolio = JSON.parse(localStorage.getItem('jarvis_portfolio')) || [];
 
+// --- GESTION DES ONGLETS ---
 function openModule(name) {
-    // Si ce n'est pas le module sport, on garde l'alerte d'origine
-    if (name !== 'sport') {
-        alert("Module " + name + " en développement");
-        return;
-    }
-
-    // --- LOGIQUE POUR LE MODULE SPORT ---
-    // On récupère le conteneur principal (la div avec la classe .app)
     const appContainer = document.querySelector('.app');
     if (!appContainer) return;
 
-    // On remplace le contenu de l'application par l'interface Sport (look Jarvis-OS)
-    appContainer.innerHTML = `
-        <div class="topbar">
-            <h1>SPORT</h1>
-            <div class="online">
-                <div class="dot"></div>
-                <p>Jarvis Active</p>
+    // 1. LE MODULE SPORT
+    if (name === 'sport') {
+        appContainer.innerHTML = `
+            <div class="topbar">
+                <h1>SPORT</h1>
+                <div class="online"><div class="dot"></div><p>Jarvis Active</p></div>
             </div>
-        </div>
-
-        <div class="card">
-            <h2>Statistiques Poids</h2>
-            <div class="stat-line">
-                <span>Dernier poids :</span>
-                <strong id="currentWeightDisplay" style="color: #7dd3fc;">-- kg</strong>
+            <div class="card">
+                <h2>Statistiques Poids</h2>
+                <div class="stat-line">
+                    <span>Dernier poids :</span>
+                    <strong id="currentWeightDisplay" style="color: #7dd3fc;">-- kg</strong>
+                </div>
+                <p id="weightDiffDisplay" style="font-size: 16px; color: #94a3b8; margin-top: 5px;"></p>
             </div>
-            <p id="weightDiffDisplay" style="font-size: 16px; color: #94a3b8; margin-top: 5px;"></p>
-        </div>
-
-        <div class="card">
-            <h2>Nouvelle Pesée</h2>
-            <form id="weightForm" onsubmit="saveWeight(event)">
-                <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal" required>
-                <button type="submit">Enregistrer le poids</button>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>Historique des pesées</h2>
-            <ul id="weightLogList" style="list-style: none; padding: 0;"></ul>
-        </div>
-
-        <button onclick="window.location.reload()" style="background: #0f172a; border: 1px solid rgba(59,130,246,0.3); margin-top: 10px;">
-            ◀ Retour au Tableau de Bord
-        </button>
-    `;
-
-    // On rafraîchit l'affichage des données sauvegardées
-    displayWeightLogs();
-}
-
-// --- FONCTION DE SAUVEGARDE DU POIDS ---
-function saveWeight(event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
+            <div class="card">
+                <h2>Nouvelle Pesée</h2>
+                <form id="weightForm">
+                    <input type="number" step="0.1" placeholder="Ex: 75.8" id="weightInput" inputmode="decimal" required>
+                    <button type="button" onclick="saveWeight()">Enregistrer le poids</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Historique des pesées</h2>
+                <ul id="weightLogList" style="list-style: none; padding: 0;"></ul>
+            </div>
+            <button onclick="window.location.reload()" style="background: #0f172a; border: 1px solid rgba(59,130,246,0.3); margin-top: 10px;">
+                ◀ Retour au Tableau de Bord
+            </button>
+        `;
+        displayWeightLogs();
+        return;
     }
 
+    // 2. LE MODULE BOURSE (INVESTISSEMENTS)
+    if (name === 'bourse') {
+        appContainer.innerHTML = `
+            <div class="topbar">
+                <h1>INVEST</h1>
+                <div class="online"><div class="dot" style="background:#38bdf8; box-shadow:0 0 12px #38bdf8;"></div><p>Market Active</p></div>
+            </div>
+            <div class="card">
+                <h2>Portefeuille Global</h2>
+                <div class="stat-line">
+                    <span>Valeur Totale :</span>
+                    <strong id="totalPortfolioValue" style="color: #7dd3fc;">0.00 €</strong>
+                </div>
+                <div class="bar"><div class="fill blue" style="width: 100%"></div></div>
+            </div>
+            <div class="card">
+                <h2>Ajouter un Actif</h2>
+                <form id="investForm">
+                    <input type="text" placeholder="Nom (Ex: S&P 500, BRICS...)" id="assetName" required>
+                    <input type="number" step="0.01" placeholder="Valeur totale possédée (€)" id="assetValue" inputmode="decimal" required>
+                    <button type="button" onclick="addAsset()">Ajouter au Portefeuille</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Mes Actifs</h2>
+                <ul id="assetList" style="list-style: none; padding: 0;"></ul>
+            </div>
+            <button onclick="window.location.reload()" style="background: #0f172a; border: 1px solid rgba(59,130,246,0.3); margin-top: 10px;">
+                ◀ Retour au Tableau de Bord
+            </button>
+        `;
+        displayPortfolio();
+        return;
+    }
+
+    // Si tu cliques sur un autre onglet pas encore créé
+    alert("Module " + name + " en développement");
+}
+
+// --- FONCTIONS LOGIQUE : SPORT ---
+function saveWeight() {
     const weightInput = document.getElementById('weightInput');
-    if (!weightInput) return false;
+    if (!weightInput) return;
     
     const val = parseFloat(weightInput.value);
-    if (!val || isNaN(val)) {
-        return false;
-    }
+    if (!val || isNaN(val)) return;
 
-    // Ajout à l'historique (le plus récent en premier)
-    weightHistory.unshift({ 
-        date: new Date().toLocaleDateString('fr-FR'), 
-        weight: val 
-    });
-    
-    // Sauvegarde définitive dans le téléphone
+    weightHistory.unshift({ date: new Date().toLocaleDateString('fr-FR'), weight: val });
     localStorage.setItem('jarvis_weight', JSON.stringify(weightHistory));
     
-    // Nettoyage de l'input et fermeture du clavier iOS
     weightInput.value = '';
     weightInput.blur(); 
-    
-    // Mise à jour visuelle immédiate
     displayWeightLogs();
-    return false;
 }
 
-// --- FONCTION D'AFFICHAGE DES DONNÉES ---
 function displayWeightLogs() {
     const currentDisplay = document.getElementById('currentWeightDisplay');
     const diffDisplay = document.getElementById('weightDiffDisplay');
     const logList = document.getElementById('weightLogList');
     
-    if (currentDisplay) {
-        currentDisplay.innerText = weightHistory.length > 0 ? weightHistory[0].weight + " kg" : "-- kg";
-    }
+    if (currentDisplay) currentDisplay.innerText = weightHistory.length > 0 ? weightHistory[0].weight + " kg" : "-- kg";
     
     if (diffDisplay) {
         if (weightHistory.length > 1) {
@@ -109,21 +115,64 @@ function displayWeightLogs() {
     if (logList) {
         logList.innerHTML = '';
         weightHistory.forEach(item => {
-            logList.innerHTML += `
-                <li style="font-size: 20px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(59,130,246,0.15); display: flex; justify-content: space-between;">
-                    <span>📅 ${item.date}</span>
-                    <strong style="color: #7dd3fc;">${item.weight} kg</strong>
-                </li>`;
+            logList.innerHTML += `<li style="font-size: 20px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(59,130,246,0.15); display: flex; justify-content: space-between;"><span>📅 ${item.date}</span><strong style="color: #7dd3fc;">${item.weight} kg</strong></li>`;
         });
     }
 }
 
-// --- TON CODE D'ORIGINE POUR LES MISSIONS (INCHANGÉ) ---
+// --- FONCTIONS LOGIQUE : BOURSE ---
+function addAsset() {
+    const nameInput = document.getElementById('assetName');
+    const valueInput = document.getElementById('assetValue');
+    if (!nameInput || !valueInput) return;
+
+    const name = nameInput.value.trim();
+    const value = parseFloat(valueInput.value);
+
+    if (name === "" || isNaN(value) || value <= 0) return;
+
+    portfolio.push({ id: Date.now(), name: name, value: value });
+    localStorage.setItem('jarvis_portfolio', JSON.stringify(portfolio));
+
+    nameInput.value = '';
+    valueInput.value = '';
+    valueInput.blur();
+    displayPortfolio();
+}
+
+function deleteAsset(id) {
+    portfolio = portfolio.filter(asset => asset.id !== id);
+    localStorage.setItem('jarvis_portfolio', JSON.stringify(portfolio));
+    displayPortfolio();
+}
+
+function displayPortfolio() {
+    const totalDisplay = document.getElementById('totalPortfolioValue');
+    const assetList = document.getElementById('assetList');
+    if (!assetList) return;
+
+    assetList.innerHTML = '';
+    let total = 0;
+
+    portfolio.forEach(asset => {
+        total += asset.value;
+        assetList.innerHTML += `
+            <li style="font-size: 20px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(59,130,246,0.15); display: flex; justify-content: space-between; align-items: center;">
+                <span>📈 ${asset.name}</span>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <strong style="color: #7dd3fc;">${asset.value.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
+                    <span onclick="deleteAsset(${asset.id})" style="color: #ff453a; cursor: pointer; font-size: 16px;">❌</span>
+                </div>
+            </li>`;
+    });
+
+    if (totalDisplay) totalDisplay.innerText = total.toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + " €";
+}
+
+// --- LOGIQUE RESTE (MISSIONS) ---
 function addTask(){
     const input = document.getElementById("taskInput");
-    if(input.value.trim() === ""){
-        return;
-    }
+    if(input.value.trim() === "") return;
     const list = document.getElementById("missionList");
     const li = document.createElement("li");
     li.innerHTML = "🟢 " + input.value;
