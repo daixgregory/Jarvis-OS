@@ -1,65 +1,27 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS-OS | Cockpit Pro</title>
-    <style>
-        :root { --bg: #050505; --card: #111; --accent: #8b5cf6; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 90px; }
-        .app-view { display: none; padding: 20px; }
-        .app-view.active { display: block; }
-        .card { background: var(--card); border: 1px solid #222; border-radius: 16px; padding: 20px; margin-bottom: 15px; }
-        .stat { font-size: 28px; font-weight: bold; color: var(--accent); }
-        .navbar { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #000; border-top: 1px solid #333; padding: 15px 0; z-index: 1000; }
-        button { background: none; border: none; color: #fff; font-size: 20px; }
-    </style>
-</head>
-<body>
-
-<div id="view-planning" class="app-view active">
-    <div class="card">
-        <h3>Cockpit Global</h3>
-        <div class="stat" id="netValueDisplay">0 €</div>
-        <small>Valeur Nette (Immo + Bourse + Cash - Impôts)</small>
-    </div>
-    <div id="taskList"></div>
-</div>
-
-<div id="view-budget" class="app-view">
-    <div class="card">
-        <h3>Budget & Fiscalité</h3>
-        <input type="number" id="incomeInput" placeholder="Salaire net" onchange="updateFinance()">
-        <div id="budgetSummary"></div>
-    </div>
-</div>
-
-<!-- Navigation simplifiée -->
-<div class="navbar">
-    <button onclick="show('planning')">📅</button>
-    <button onclick="show('bourse')">📈</button>
-    <button onclick="show('sport')">⚏</button>
-    <button onclick="show('mecanique')">🔧</button>
-    <button onclick="show('budget')">💳</button>
-</div>
-
+<!-- Remplace la section script dans ton index.html par celle-ci -->
 <script>
     let db = JSON.parse(localStorage.getItem('jarvis_db')) || { 
-        salary: 0, expenses: 0, immo: 200000, bourse: 0, taxProvision: 0.20 
+        salary: 0, immo: 200000, bourse: 15000, cash: 5000, taxProvision: 0.20 
     };
 
-    function show(id) {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-        document.getElementById('view-' + id).classList.add('active');
-    }
-
     function updateFinance() {
-        db.salary = parseFloat(document.getElementById('incomeInput').value) || 0;
-        // Calcul du Reste à vivre avec provision fiscale
+        // Récupère la valeur du champ salaire
+        let input = document.getElementById('incomeInput');
+        if(input) db.salary = parseFloat(input.value) || 0;
+        
+        // Calcul du "Graal" (Valeur Nette)
         const afterTax = db.salary * (1 - db.taxProvision);
-        document.getElementById('netValueDisplay').innerText = (db.immo + db.bourse + afterTax).toLocaleString() + ' €';
+        const total = db.immo + db.bourse + db.cash + afterTax;
+        
+        // Affiche la valeur dans la carte
+        document.getElementById('netValueDisplay').innerText = total.toLocaleString() + ' €';
         localStorage.setItem('jarvis_db', JSON.stringify(db));
     }
+
+    // Force l'affichage au chargement pour ne plus avoir "0 €"
+    window.onload = () => {
+        let input = document.getElementById('incomeInput');
+        if(input) input.value = db.salary;
+        updateFinance();
+    };
 </script>
-</body>
-</html>
